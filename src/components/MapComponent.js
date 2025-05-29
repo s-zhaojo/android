@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import './styles.css'; // Import the CSS
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyCG4hWf-Cck1E4rNWBtW2tddCqcmfX261A';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyD6HMsrIQ2aL0WOAUuIBnGtNoyGZsr726w';
 
 
 
@@ -145,7 +145,7 @@ const MapComponent = () => {
       {/* Main Content */}
       <div className="main-content">
         <div className="header">
-          <h1>EcoVoyage</h1>
+          <h1>GPS Trakcer</h1>
           <div className="input-container">
             <input
               className="search-bar"
