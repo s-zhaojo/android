@@ -36,7 +36,7 @@ const speeds = {
   airplane: 500, // mph (assuming long-distance)
 };
 
-const MapComponent = () => {
+const App = () => {
   const [directions, setDirections] = useState(null);
   const [start, setStart] = useState(''); // Start location as a string
   const [end, setEnd] = useState(''); // End location as a string
@@ -296,7 +296,7 @@ const MapComponent = () => {
 };
 
 
-export default MapComponent;
+export default App;
                               
 
                       
