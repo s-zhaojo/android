@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import './styles.css'; // Import the CSS
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDzRavz0rBVoZn5xeOYTjb3kJkegGNL7Qw'
+const GOOGLE_MAPS_API_KEY = 'AIzaSyD6HMsrIQ2aL0WOAUuIBnGtNoyGZsr726w'
 
 
 const containerStyle = {
