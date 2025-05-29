@@ -36,3 +36,54 @@
     transform: rotate(360deg);
   }
 }
+
+.blueBackground {
+  background-color: blue;
+}
+
+.title{
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.page{
+  background-color: #e9f9e1;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+}
+
+.header{
+  width: 100%;
+  background-color: blue;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.logo{
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.nacbaer{
+  display: flex;
+}
+
+.navButton{
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 15px;
+  font-size: 1rem;
+}
