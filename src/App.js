@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 function App() {
   return (
     <div>
-      <h1>Ecovoyage</h1>
+      <h1>GPS Tracker</h1>
       <MapComponent />
     </div>
   );
