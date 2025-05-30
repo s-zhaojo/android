@@ -156,9 +156,10 @@ button:hover{
 }
 
 .travel-mode-buttons button:hover{
-  background-color: lightblue
+  background-color: lightblue;
 }
 
 .travel-mode-buttons .selected{
   background-color: #388e3c;
 }
+
