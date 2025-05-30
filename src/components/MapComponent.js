@@ -144,7 +144,7 @@ const MapComponent = () => {
       {/* Main Content */}
       <div className="main-content">
         <div className="header">
-          <h1>GPS Trakcer</h1>
+          <h1>GPS Tracker</h1>
           <div className="input-container">
             <input
               className="search-bar"
