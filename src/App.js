@@ -55,30 +55,20 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLoginClick = () => {
     if (isLoggedIn) {
-      // Logout
       setLoggedIn(false);
-      setUsername('');
-      setPassword('');
     } else {
-      setShowLoginModal(true);
+      setIsModalOpen(true);
     }
   };
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
-      setLoggedIn(true);
-      setShowLoginModal(false);
-      setPassword('');
-    } else {
-      alert('Please enter username and password.');
-    }
+    setLoggedIn(true);
+    setIsModalOpen(false);
   };
 
   const handleDirectionsResponse = (result, status) => {
@@ -95,7 +85,7 @@ const MapComponent = () => {
         car: distInMiles * carbonEmissions.car,
         truck: distInMiles * carbonEmissions.truck,
         bus: distInMiles * carbonEmissions.bus,
-        motorcycle: distInMiles * carbonEmissions.motorcycle,
+        motocycle: distInMiles * carbonEmissions.motorcycle,
         airplane: distInMiles * carbonEmissions.airplane,
       };
       setEmissions(modeEmissions);
@@ -330,7 +320,7 @@ const MapComponent = () => {
       </div>
 
       {/* User Profile Card */}
-      <div className="user-profile">Add commentMore actions
+      <div className="user-profile">
         <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fjoshzhao7&psig=AOvVaw2CTZy0nbOoITCKrhmeyR_H&ust=1746328999383000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJiumNGsho0DFQAAAAAdAAAAABAE" alt="John" />
         <h1>John Doe</h1>
         <p className="title">CEO & Founder, Example</p>
@@ -343,63 +333,48 @@ const MapComponent = () => {
         </div>
         <p><button>Contact</button></p>
         </div>
-
-        {/* LOGIN MODAL */}Add commentMore actions
-      {showLoginModal && (
+        {isModalOpen && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
+          className="modal"
+          onClick={(e) => {
+            if (e.target.className === 'modal') setIsModalOpen(false);
           }}
         >
-          <div
-            style={{
-              backgroundColor: '#fff',
-              padding: 20,
-              borderRadius: 8,
-              minWidth: 300,
-            }}
-          >
-            <h2>Login</h2>
-            <form onSubmit={handleLoginSubmit}>
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                style={{ width: '100%', marginBottom: 10, padding: 8 }}
+          <form className="modal-content animate" onSubmit={handleLoginSubmit}>
+            <div className="imgcontainer">
+              <span onClick={() => setIsModalOpen(false)} className="close" title="Close Modal">
+                &times;
+              </span>
+              <img
+                src="https://i.pravatar.cc/150?img=3"
+                alt="Avatar"
+                className="avatar"
               />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{ width: '100%', marginBottom: 10, padding: 8 }}
-              />
-              <button type="submit" style={{ marginRight: 10 }}>
-                Log In
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowLoginModal(false)}
-                style={{ backgroundColor: '#ddd' }}
-              >
+            </div>
+
+            <div className="login-container">
+              <label htmlFor="uname"><b>Username</b></label>
+              <input type="text" placeholder="Enter Username" name="uname" required />
+
+              <label htmlFor="psw"><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="psw" required />
+
+              <button type="submit">Login</button>
+              <label>
+                <input type="checkbox" defaultChecked name="remember" /> Remember me
+              </label>
+            </div>
+
+            <div className="login-container" style={{ backgroundColor: '#f1f1f1' }}>
+              <button type="button" onClick={() => setIsModalOpen(false)} className="cancelbtn">
                 Cancel
               </button>
-            </form>
-          </div>
+              <span className="psw">Forgot <a href="#">password?</a></span>
+            </div>
+          </form>
         </div>
       )}
+        
 </div>
     
   );
