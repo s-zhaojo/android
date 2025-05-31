@@ -7,7 +7,7 @@ import {
 } from '@react-google-maps/api';
 import './components/styles.css';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyCG4hWf-Cck1E4rNWBtW2tddCqcmfX261A';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
 const containerStyle = {
   width: '100%',
