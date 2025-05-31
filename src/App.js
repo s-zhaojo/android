@@ -6,7 +6,7 @@ import {
   DirectionsRenderer,
 } from '@react-google-maps/api';
 import './components/styles.css';
-import GPS from './components/images/GPS.jpg';
+import GPS from './components/GPS.jpg';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
