@@ -3,7 +3,7 @@ body{
   font-size: 20px;
   margin: 0;
   padding: 0;
-  background-color:lightgreen;
+  background-color:lightblue;
 }
 
 .container{
@@ -108,14 +108,6 @@ body{
 
 .card li{
   margin-bottom: 10px;
-}
-
-.cardLogo {
-    background-color: lightsteelblue;
-    margin-bottom: 20px;
-    width: 50px;
-    border-radius: 3%;
-    padding: 10%;
 }
 
 .separator {

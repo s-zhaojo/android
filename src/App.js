@@ -128,7 +128,7 @@ const MapComponent = () => {
 
       <div className="container">
         <div className="sidebar">
-          <div className="cardLogo">
+          <div className = "card">
             <img src={GPS} alt="GPS" width="100%" height="100%"/>
           </div>
           <div className="card">
