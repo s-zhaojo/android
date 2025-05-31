@@ -110,6 +110,14 @@ body{
   margin-bottom: 10px;
 }
 
+.cardLogo {
+    background-color: black;
+    margin-bottom: 20px;
+    width: 50px;
+    border-radius: 3%;
+    padding: 10%;
+}
+
 .separator {
   margin: 20px 0;
 }
