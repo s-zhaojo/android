@@ -55,20 +55,30 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLoginClick = () => {
     if (isLoggedIn) {
+      // Logout
       setLoggedIn(false);
+      setUsername('');
+      setPassword('');
     } else {
-      setIsModalOpen(true);
+      setShowLoginModal(true);
     }
   };
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    setLoggedIn(true);
-    setIsModalOpen(false);
+    if (username.trim() && password.trim()) {
+      setLoggedIn(true);
+      setShowLoginModal(false);
+      setPassword('');
+    } else {
+      alert('Please enter username and password.');
+    }
   };
 
   const handleDirectionsResponse = (result, status) => {
