@@ -128,7 +128,7 @@ const MapComponent = () => {
 
         <div className="card">
           <h3>Total Distance</h3>
-          <p>{totalDistance.toFixed(2)} km</p>
+          <p>{distance / 1000} km / {distance * 0.000621371} miles</p>
         </div>
         <div className="card">
           <h3>Total Cost</h3>
