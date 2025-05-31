@@ -54,7 +54,7 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  const [isLoggedIn, setLoggedIn] = useState(0);Add commentMore actions
+  const [isLoggedIn, setLoggedIn] = useState(0);
   const handleLogin = () => setLoggedIn(!isLoggedIn);
 
   const handleDirectionsResponse = (result, status) => {
