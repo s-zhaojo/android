@@ -140,9 +140,9 @@ const MapComponent = () => {
         <div className="sidebar">
           <div className = "card">
             <img src={GPS} alt="GPS" width="100%" height="80%"/>
-            <button className = "loginbutton" onClick={handleLogin}>
-                {isLoggedIn ? 'Log Out' : 'Log In'}
-          </button>
+            <button onClick={handleLoginClick}>Add commentMore actions
+              {isLoggedIn ? 'Log Out' : 'Log In'}
+            </button>
           </div>
           <div className="card">
             <h3>Total Distance</h3>
