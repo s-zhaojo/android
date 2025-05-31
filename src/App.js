@@ -54,7 +54,7 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(0);Add commentMore actions
   const handleLogin = () => setLoggedIn(!isLoggedIn);
 
   const handleDirectionsResponse = (result, status) => {
@@ -122,14 +122,13 @@ const MapComponent = () => {
 
   return (
     <div>
-      <button onClick={handleLogin}>
-        {isLoggedIn ? 'Log Out' : 'Log In'}
-      </button>
-
       <div className="container">
         <div className="sidebar">
           <div className = "card">
             <img src={GPS} alt="GPS" width="100%" height="100%"/>
+            <button onClick={handleLogin}>
+                {isLoggedIn ? 'Log Out' : 'Log In'}
+          </button>
           </div>
           <div className="card">
             <h3>Total Distance</h3>
