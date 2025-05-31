@@ -342,51 +342,65 @@ const MapComponent = () => {
           <a href="#"><i className="fa fa-facebook"></i></a>
         </div>
         <p><button>Contact</button></p>
+        </div>
 
-        {isModalOpen && (
+        {/* LOGIN MODAL */}Add commentMore actions
+      {showLoginModal && (
         <div
-          className="modal"
-          onClick={(e) => {
-            if (e.target.className === 'modal') setIsModalOpen(false);
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
           }}
         >
-          <form className="modal-content animate" onSubmit={handleLoginSubmit}>
-            <div className="imgcontainer">
-              <span onClick={() => setIsModalOpen(false)} className="close" title="Close Modal">
-                &times;
-              </span>
-              <img
-                src="https://i.pravatar.cc/150?img=3"
-                alt="Avatar"
-                className="avatar"
+          <div
+            style={{
+              backgroundColor: '#fff',
+              padding: 20,
+              borderRadius: 8,
+              minWidth: 300,
+            }}
+          >
+            <h2>Login</h2>
+            <form onSubmit={handleLoginSubmit}>
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: 10, padding: 8 }}
               />
-            </div>
-
-            <div className="login-container">
-              <label htmlFor="uname"><b>Username</b></label>
-              <input type="text" placeholder="Enter Username" name="uname" required />
-
-              <label htmlFor="psw"><b>Password</b></label>
-              <input type="password" placeholder="Enter Password" name="psw" required />
-
-              <button type="submit">Login</button>
-              <label>
-                <input type="checkbox" defaultChecked name="remember" /> Remember me
-              </label>
-            </div>
-
-            <div className="login-container" style={{ backgroundColor: '#f1f1f1' }}>
-              <button type="button" onClick={() => setIsModalOpen(false)} className="cancelbtn">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: 10, padding: 8 }}
+              />
+              <button type="submit" style={{ marginRight: 10 }}>
+                Log In
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(false)}
+                style={{ backgroundColor: '#ddd' }}
+              >
                 Cancel
               </button>
-              <span className="psw">Forgot <a href="#">password?</a></span>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       )}
-      </div>
-    </div>
-
+</div>
     
   );
 };
