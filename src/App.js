@@ -55,7 +55,21 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const handleLogin = () => setLoggedIn(prev => !prev);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      setLoggedIn(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    setLoggedIn(true);
+    setIsModalOpen(false);
+  };
 
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
@@ -318,8 +332,52 @@ const MapComponent = () => {
           <a href="#"><i className="fa fa-facebook"></i></a>
         </div>
         <p><button>Contact</button></p>
+
+        {isModalOpen && (
+        <div
+          className="modal"
+          onClick={(e) => {
+            if (e.target.className === 'modal') setIsModalOpen(false);
+          }}
+        >
+          <form className="modal-content animate" onSubmit={handleLoginSubmit}>
+            <div className="imgcontainer">
+              <span onClick={() => setIsModalOpen(false)} className="close" title="Close Modal">
+                &times;
+              </span>
+              <img
+                src="https://i.pravatar.cc/150?img=3"
+                alt="Avatar"
+                className="avatar"
+              />
+            </div>
+
+            <div className="login-container">
+              <label htmlFor="uname"><b>Username</b></label>
+              <input type="text" placeholder="Enter Username" name="uname" required />
+
+              <label htmlFor="psw"><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="psw" required />
+
+              <button type="submit">Login</button>
+              <label>
+                <input type="checkbox" defaultChecked name="remember" /> Remember me
+              </label>
+            </div>
+
+            <div className="login-container" style={{ backgroundColor: '#f1f1f1' }}>
+              <button type="button" onClick={() => setIsModalOpen(false)} className="cancelbtn">
+                Cancel
+              </button>
+              <span className="psw">Forgot <a href="#">password?</a></span>
+            </div>
+          </form>
+        </div>
+      )}
       </div>
     </div>
+
+    
   );
 };
 
