@@ -6,6 +6,7 @@ import {
   DirectionsRenderer,
 } from '@react-google-maps/api';
 import './components/styles.css';
+import GPS from './components/images/GPS.jpg';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -127,6 +128,9 @@ const MapComponent = () => {
 
       <div className="container">
         <div className="sidebar">
+          <div className = "card">
+            <img src={GPS} alt="GPS" width="100%" height="100%"/>
+          </div>
           <div className="card">
             <h3>Total Distance</h3>
             <p>{distance / 1000} km / {(distance * 0.000621371).toFixed(2)} miles</p>
