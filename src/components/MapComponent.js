@@ -168,7 +168,8 @@ const MapComponent = () => {
                                 </>
                                 :
                                 <>
-                        
+                                    <Link className='text-sm text-blue-600 underline' to={'/login'}>Login</Link>
+                                    <Link className='text-sm text-blue-600 underline' to={'/register'}>Register New Account</Link>
                                 </>
                         }
             
