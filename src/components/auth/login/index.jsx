@@ -47,12 +47,9 @@ const Login = () => {
                         className="space-y-5"
                     >
                         <div>
-                            <label className="text-sm text-gray-600 font-bold">
-                                Email
-                            </label>
                             <input
                                 type="email"
-                                placeholder="username"
+                                placeholder="Username"
                                 autoComplete='email'
                                 required
                                 value={email} onChange={(e) => { setEmail(e.target.value) }}
@@ -62,11 +59,9 @@ const Login = () => {
 
 
                         <div>
-                            <label className="text-sm text-gray-600 font-bold">
-                                Password
-                            </label>
                             <input
                                 type="password"
+                                placeholder="Password"
                                 autoComplete='current-password'
                                 required
                                 value={password} onChange={(e) => { setPassword(e.target.value) }}
