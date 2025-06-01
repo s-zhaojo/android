@@ -28,7 +28,7 @@ function App() {
     },
     {
       path: "/home",
-      element: <Home />,
+      element: <MapComponent />,
     },
   ];
   let routesElement = useRoutes(routesArray);
