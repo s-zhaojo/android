@@ -8,6 +8,8 @@ import {
 import './styles.css';
 import GPS from './GPS.jpg';
 import { useAuth } from '../contexts/authContext';
+import { Link, useNavigate } from 'react-router-dom'
+import { doSignOut } from '../firebase/auth'
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -155,6 +157,21 @@ const MapComponent = () => {
           <div className = "card">
             <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="65%"/>
+            <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
+                        {
+                            userLoggedIn
+                                ?
+                                <>
+                                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='text-sm text-blue-600 underline'>Logout</button>
+                                </>
+                                :
+                                <>
+                                    <Link className='text-sm text-blue-600 underline' to={'/login'}>Login</Link>
+                                    <Link className='text-sm text-blue-600 underline' to={'/register'}>Register New Account</Link>
+                                </>
+                        }
+            
+                    </nav>
              <div className='text-2xl font-bold pt-14'>Hello {currentUser.displayName ? currentUser.displayName : currentUser.email}, you are now logged in.</div>
           </div>
           <div className="card">
