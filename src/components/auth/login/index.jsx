@@ -52,6 +52,7 @@ const Login = () => {
                             </label>
                             <input
                                 type="email"
+                                placeholder="username"
                                 autoComplete='email'
                                 required
                                 value={email} onChange={(e) => { setEmail(e.target.value) }}
