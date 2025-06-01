@@ -7,6 +7,7 @@ import {
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
+import { useAuth } from '../../contexts/authContext';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -178,7 +179,11 @@ const MapComponent = () => {
           <div className = "card">
             <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="65%"/>
-             <h3>{isLoggedIn ? `Welcome ${username}!` : "Please Login:"}</h3>
+             <h3>
+              {currentUser
+                  ? `Hello ${currentUser.displayName || currentUser.email}, you are now logged in.`
+                  : "Please log in."}
+            </h3>
             <button onClick={handleLoginClick}>
               {isLoggedIn ? 'Log Out' : 'Log In'}
             </button>
