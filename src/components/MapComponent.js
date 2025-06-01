@@ -46,6 +46,8 @@ const speeds = {
 
 const MapComponent = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate()
+  const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
   const [zoom, setZoom] = useState(10);
   const [directions, setDirections] = useState(null);
