@@ -180,11 +180,7 @@ const MapComponent = () => {
           <div className = "card">
             <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="65%"/>
-             <h3>
-              {currentUser
-                  ? `Hello ${currentUser.displayName || currentUser.email}, you are now logged in.`
-                  : "Please log in."}
-            </h3>
+             <div className='text-2xl font-bold pt-14'>Hello {currentUser.displayName ? currentUser.displayName : currentUser.email}, you are now logged in.</div>
             <button onClick={handleLoginClick}>
               {isLoggedIn ? 'Log Out' : 'Log In'}
             </button>
