@@ -8,6 +8,10 @@ import Home from "./components/home";
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
 
+import './App.css';
+
+
+
 function App() {
   const routesArray = [
     {
