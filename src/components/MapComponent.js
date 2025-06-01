@@ -7,6 +7,7 @@ import {
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
+import { useAuth } from '../contexts/authContext';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -42,6 +43,7 @@ const speeds = {
 };
 
 const MapComponent = () => {
+  const { currentUser } = useAuth();
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
   const [zoom, setZoom] = useState(10);
   const [directions, setDirections] = useState(null);
