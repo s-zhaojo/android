@@ -122,7 +122,7 @@ const MapComponent = () => {
         car: distInMiles * carbonEmissions.car,
         truck: distInMiles * carbonEmissions.truck,
         bus: distInMiles * carbonEmissions.bus,
-        motocycle: distInMiles * carbonEmissions.motorcycle,
+        motorcycle: distInMiles * carbonEmissions.motorcycle,
         airplane: distInMiles * carbonEmissions.airplane,
       };
       setEmissions(modeEmissions);
