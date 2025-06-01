@@ -10,6 +10,8 @@ import GPS from './components/GPS.jpg';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
+let infoWindow;
+
 const containerStyle = {
   width: '100%',
   height: '60vh',
@@ -40,6 +42,7 @@ const speeds = {
 };
 
 const MapComponent = () => {
+  const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
   const [directions, setDirections] = useState(null);
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
@@ -58,6 +61,28 @@ const MapComponent = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  function setLocation() {
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setMapCenter(pos);
+        },
+        () => {
+          alert("error could do pos");
+        },
+      );
+    }
+    
+    else {
+      // Browser doesn't support Geolocation
+      alert("error no suppor pos");
+    }
+}
 
   const handleLoginClick = () => {
     if (isLoggedIn) {
@@ -149,6 +174,7 @@ const MapComponent = () => {
       <div className="container">
         <div className="sidebar">
           <div className = "card">
+            <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="80%"/>
              <h3>{isLoggedIn ? `Welcome ${username}!` : "Please Login:"}</h3>
             <button onClick={handleLoginClick}>
@@ -223,7 +249,7 @@ const MapComponent = () => {
             <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
               <GoogleMap
                 mapContainerStyle={containerStyle}
-                center={{ lat: 37.7749, lng: -122.4194 }}
+                center={mapCenter}
                 zoom={10}
               >
                 {isRequestingDirections && start && end && (
