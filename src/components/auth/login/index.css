@@ -4,3 +4,9 @@ body{
     align-items: center;
     min-height: 100vh;
 }
+
+.w-96{
+    width: 420px;
+    background: darkblue;
+
+}
