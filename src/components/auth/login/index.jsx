@@ -102,7 +102,7 @@ const Login = () => {
                                 </clipPath>
                             </defs>
                         </svg>
-                        {isSigningIn ? 'Signing In...' : 'Continue with Google'}
+                        <div className = 'ContinueWithGoogle'>{isSigningIn ? 'Signing In...' : 'Continue with Google'}</div>
                     </button>
                 </div>
             </main>
