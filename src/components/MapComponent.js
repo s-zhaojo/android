@@ -60,10 +60,6 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
 
   function setLocation() {
   if (navigator.geolocation) {
@@ -88,27 +84,6 @@ const MapComponent = () => {
     }
 }
 
-  const handleLoginClick = () => {
-    if (isLoggedIn) {
-      // Logout
-      setLoggedIn(false);
-      setUsername('');
-      setPassword('');
-    } else {     
-      setShowLoginModal(true);
-    }
-  };
-
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    if (username.trim() && password.trim()) {
-      setLoggedIn(true);
-      setShowLoginModal(false);
-      setPassword('');
-    } else {
-      alert('Please enter username and password.');
-    }
-  };
 
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
@@ -181,9 +156,6 @@ const MapComponent = () => {
             <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="65%"/>
              <div className='text-2xl font-bold pt-14'>Hello {currentUser.displayName ? currentUser.displayName : currentUser.email}, you are now logged in.</div>
-            <button onClick={handleLoginClick}>
-              {isLoggedIn ? 'Log Out' : 'Log In'}
-            </button>
           </div>
           <div className="card">
             <h3>Total Distance</h3>
@@ -359,63 +331,6 @@ const MapComponent = () => {
           </div>
         </div>
       </div>
-
-        {/* LOGIN MODAL */}
-      {showLoginModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#fff',
-              padding: 20,
-              borderRadius: 8,
-              minWidth: 300,
-            }}
-          >
-            <h2>Login</h2>
-            <form onSubmit={handleLoginSubmit}>
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                style={{ width: '100%', marginBottom: 10, padding: 8 }}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{ width: '100%', marginBottom: 10, padding: 8 }}
-              />
-              <button type="submit" style={{ marginRight: 10 }}>
-                Log In
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowLoginModal(false)}
-                style={{ backgroundColor: '#ddd' }}
-              >
-                Cancel
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
 </div>
     
   );
