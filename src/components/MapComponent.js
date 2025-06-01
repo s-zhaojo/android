@@ -7,7 +7,6 @@ import {
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
-import { useAuth } from '../../contexts/authContext';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
