@@ -39,7 +39,7 @@ const Register = () => {
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
-                        <div>
+                        <div className = "input-box">
                             <label className="text-sm text-gray-600 font-bold">
                             </label>
                             <input
@@ -52,7 +52,7 @@ const Register = () => {
                             />
                         </div>
 
-                        <div>
+                        <div className = "input-box">
                             <label className="text-sm text-gray-600 font-bold">
                             </label>
                             <input
@@ -66,7 +66,7 @@ const Register = () => {
                             />
                         </div>
 
-                        <div>
+                        <div className = "input-box">
                             <label className="text-sm text-gray-600 font-bold">
                             </label>
                             <input
