@@ -41,11 +41,11 @@ const Register = () => {
                     >
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
-                                Email
                             </label>
                             <input
                                 type="email"
                                 autoComplete='email'
+                                placeholder = "Email"
                                 required
                                 value={email} onChange={(e) => { setEmail(e.target.value) }}
                                 className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
@@ -54,10 +54,10 @@ const Register = () => {
 
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
-                                Password
                             </label>
                             <input
                                 disabled={isRegistering}
+                                placeholder = "Password"
                                 type="password"
                                 autoComplete='new-password'
                                 required
@@ -68,10 +68,10 @@ const Register = () => {
 
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
-                                Confirm Password
                             </label>
                             <input
                                 disabled={isRegistering}
+                                placeholder = "Confirm Password"
                                 type="password"
                                 autoComplete='off'
                                 required
