@@ -43,6 +43,7 @@ const speeds = {
 
 const MapComponent = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
+  const [zoom, setZoom] = useState(10);
   const [directions, setDirections] = useState(null);
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
@@ -71,6 +72,7 @@ const MapComponent = () => {
             lng: position.coords.longitude,
           };
           setMapCenter(pos);
+          setZoom(16);
         },
         () => {
           alert("error could do pos");
@@ -175,7 +177,7 @@ const MapComponent = () => {
         <div className="sidebar">
           <div className = "card">
             <button onClick = {setLocation}>get location</button>
-            <img src={GPS} alt="GPS" width="100%" height="80%"/>
+            <img src={GPS} alt="GPS" width="100%" height="50%"/>
              <h3>{isLoggedIn ? `Welcome ${username}!` : "Please Login:"}</h3>
             <button onClick={handleLoginClick}>
               {isLoggedIn ? 'Log Out' : 'Log In'}
@@ -250,7 +252,7 @@ const MapComponent = () => {
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={mapCenter}
-                zoom={10}
+                zoom={zoom}
               >
                 {isRequestingDirections && start && end && (
                   <DirectionsService
