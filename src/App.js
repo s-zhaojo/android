@@ -177,7 +177,7 @@ const MapComponent = () => {
         <div className="sidebar">
           <div className = "card">
             <button onClick = {setLocation}>get location</button>
-            <img src={GPS} alt="GPS" width="100%" height="70%"/>
+            <img src={GPS} alt="GPS" width="100%" height="65%"/>
              <h3>{isLoggedIn ? `Welcome ${username}!` : "Please Login:"}</h3>
             <button onClick={handleLoginClick}>
               {isLoggedIn ? 'Log Out' : 'Log In'}
