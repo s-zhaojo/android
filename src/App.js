@@ -150,6 +150,7 @@ const MapComponent = () => {
         <div className="sidebar">
           <div className = "card">
             <img src={GPS} alt="GPS" width="100%" height="80%"/>
+             <h3>{isLoggedIn ? `Welcome ${username}!` : "Please Login:"}</h3>
             <button onClick={handleLoginClick}>
               {isLoggedIn ? 'Log Out' : 'Log In'}
             </button>
@@ -330,7 +331,7 @@ const MapComponent = () => {
       </div>
 
       {/* User Profile Card */}
-      <div className="user-profile">Add commentMore actions
+      <div className="user-profile">
         <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fjoshzhao7&psig=AOvVaw2CTZy0nbOoITCKrhmeyR_H&ust=1746328999383000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJiumNGsho0DFQAAAAAdAAAAABAE" alt="John" />
         <h1>John Doe</h1>
         <p className="title">CEO & Founder, Example</p>
@@ -344,7 +345,7 @@ const MapComponent = () => {
         <p><button>Contact</button></p>
         </div>
 
-        {/* LOGIN MODAL */}Add commentMore actions
+        {/* LOGIN MODAL */}
       {showLoginModal && (
         <div
           style={{
