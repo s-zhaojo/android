@@ -30,3 +30,17 @@ body{
     border: 2px solid rgba(255, 255, 255);
     border-radius: 40px; 
 }
+
+.signin{
+    width: 100%;
+    height: 45px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
