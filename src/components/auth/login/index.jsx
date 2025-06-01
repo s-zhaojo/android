@@ -46,26 +46,26 @@ const Login = () => {
                         onSubmit={onSubmit}
                         className="space-y-5"
                     >
-                        <div>
+                        <div className = "input-box">
                             <input
                                 type="email"
                                 placeholder="Username"
                                 autoComplete='email'
                                 required
                                 value={email} onChange={(e) => { setEmail(e.target.value) }}
-                                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                                className=" loginboxes w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
                             />
                         </div>
 
 
-                        <div>
+                        <div className = "input-box">
                             <input
                                 type="password"
                                 placeholder="Password"
                                 autoComplete='current-password'
                                 required
                                 value={password} onChange={(e) => { setPassword(e.target.value) }}
-                                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                                className=" loginboxes w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
                             />
                         </div>
 
