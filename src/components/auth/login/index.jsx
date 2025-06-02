@@ -27,6 +27,7 @@ const Login = () => {
             setIsSigningIn(true)
             doSignInWithGoogle().catch(err => {
                 setIsSigningIn(false)
+                setErrorMessage(err.message)
             })
         }
     }
