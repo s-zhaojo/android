@@ -69,36 +69,46 @@ const MapComponent = () => {
 
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          console.log("User location:", pos);
-          setUserLocation(pos);
-          setMapCenter(pos);
-          setZoom(16);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
+  if (navigator.geolocation) {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        console.log("User location:", pos);
+        setUserLocation(pos);
+        setMapCenter(pos);
+        setZoom(16);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        if (error.code === error.TIMEOUT) {
+          alert("Location request timed out. Trying again...");
+        } else if (error.code === error.PERMISSION_DENIED) {
+          alert("Permission denied. Please enable location access.");
+        } else {
           alert("Error getting location: " + error.message);
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 0,
-          timeout: 5000,
         }
-      );
+        // Optionally: fallback location
+        setMapCenter({ lat: 37.7749, lng: -122.4194 }); // San Francisco
+        setZoom(10);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000, // 🔼 Increase timeout to 15 seconds
+        maximumAge: 10000, // use recent location if available
+      }
+    );
 
-      return () => {
-        navigator.geolocation.clearWatch(watchId); // Clean up watcher on unmount
-      };
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  }, []);
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+}, []);
+
 
 
   const handleDirectionsResponse = (result, status) => {
