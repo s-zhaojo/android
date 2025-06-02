@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   GoogleMap,
   LoadScript,
@@ -48,6 +48,8 @@ const speeds = {
 };
 
 const MapComponent = () => {
+  const startRef = useRef(null);
+  const endRef = useRef(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate()
   const [userLocation, setUserLocation] = useState(null);
@@ -69,6 +71,38 @@ const MapComponent = () => {
   const [totalDistance, setTotalDistance] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
+
+  useEffect(() => {
+  if (!window.google || !window.google.maps) return;
+
+  const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
+    types: ['geocode'],
+  });
+
+  autocompleteStart.addListener('place_changed', () => {
+    const place = autocompleteStart.getPlace();
+    if (place.formatted_address) {
+      setStart(place.formatted_address);
+    } else if (place.name) {
+      setStart(place.name);
+    }
+  });
+
+  const autocompleteEnd = new window.google.maps.places.Autocomplete(endRef.current, {
+    types: ['geocode'],
+  });
+
+  autocompleteEnd.addListener('place_changed', () => {
+    const place = autocompleteEnd.getPlace();
+    if (place.formatted_address) {
+      setEnd(place.formatted_address);
+    } else if (place.name) {
+      setEnd(place.name);
+    }
+  });
+
+}, []);
+
 
 
 const setLocation = () => {
@@ -228,6 +262,7 @@ const stopLocationTracking = () => {
             <h1>CO2 Tracker</h1>
             <div className="input-container">
               <input
+                ref={startRef}
                 className="search-bar"
                 type="text"
                 placeholder="Start Location"
@@ -235,6 +270,7 @@ const stopLocationTracking = () => {
                 onChange={(e) => setStart(e.target.value)}
               />
               <input
+                ref={endRef}
                 className="search-bar"
                 type="text"
                 placeholder="End Location"
