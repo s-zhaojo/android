@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   GoogleMap,
   LoadScript,
@@ -53,8 +53,8 @@ const MapComponent = () => {
   const [userLocation, setUserLocation] = useState(null);
   const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
-  const [autocompleteStart, setAutocompleteStart] = useState(null);
-  const [autocompleteEnd, setAutocompleteEnd] = useState(null);
+  const autocompleteStartRef = useRef(null);
+  const autocompleteEndRef = useRef(null);
   const [watchId, setWatchId] = useState(null);
   const [isTracking, setIsTracking] = useState(false);
   const [zoom, setZoom] = useState(10);
@@ -230,32 +230,45 @@ const stopLocationTracking = () => {
             <h1>GPS Tracker</h1>
             <div className="input-container">
               <Autocomplete
-                onLoad={(auto) => setAutocompleteStart(auto)}
-                onPlaceChanged={() => {
-                const place = autocompleteStart.getPlace();
-                setStart(place.formatted_address || place.name);
-              }}
-              >
-               <input
-                  className="search-bar"
-                  type="text"
-                  placeholder="Start Location"
-                />
-              </Autocomplete>
+  onLoad={(autocomplete) => (autocompleteStartRef.current = autocomplete)}
+  onPlaceChanged={() => {
+    const place = autocompleteStartRef.current.getPlace();
+    if (place && place.formatted_address) {
+      setStart(place.formatted_address);
+    } else if (place && place.name) {
+      setStart(place.name);
+    }
+  }}
+>
+  <input
+    className="search-bar"
+    type="text"
+    placeholder="Start Location"
+    value={start}
+    onChange={(e) => setStart(e.target.value)}
+  />
+</Autocomplete>
 
-              <Autocomplete
-                onLoad={(auto) => setAutocompleteEnd(auto)}
-                onPlaceChanged={() => {
-                  const place = autocompleteEnd.getPlace();
-                  setEnd(place.formatted_address || place.name);
-                }}
-              >
-                <input
-                   className="search-bar"
-                    type="text"
-                    placeholder="End Location"
-                />
-              </Autocomplete>
+<Autocomplete
+  onLoad={(autocomplete) => (autocompleteEndRef.current = autocomplete)}
+  onPlaceChanged={() => {
+    const place = autocompleteEndRef.current.getPlace();
+    if (place && place.formatted_address) {
+      setEnd(place.formatted_address);
+    } else if (place && place.name) {
+      setEnd(place.name);
+    }
+  }}
+>
+  <input
+    className="search-bar"
+    type="text"
+    placeholder="End Location"
+    value={end}
+    onChange={(e) => setEnd(e.target.value)}
+  />
+</Autocomplete>
+
               <label htmlFor="vehicle">Vehicle type:</label>
               <select
                 name="vehicle"
