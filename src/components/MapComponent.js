@@ -10,8 +10,6 @@ import GPS from './GPS.jpg';
 import { useAuth } from '../contexts/authContext';
 import { Link, useNavigate } from 'react-router-dom'
 import { doSignOut } from '../firebase/auth'
-import { Autocomplete } from '@react-google-maps/api';
-import { useRef } from 'react';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -49,8 +47,6 @@ const speeds = {
 const MapComponent = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate()
-  const startAutocompleteRef = useRef(null);
-  const endAutocompleteRef = useRef(null);
   const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
   const [zoom, setZoom] = useState(10);
@@ -68,19 +64,6 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  const onStartPlaceChanged = () => {
-  const place = startAutocompleteRef.current.getPlace();
-  if (place?.formatted_address) {
-    setStart(place.formatted_address);
-  }
-};
-
-const onEndPlaceChanged = () => {
-  const place = endAutocompleteRef.current.getPlace();
-  if (place?.formatted_address) {
-    setEnd(place.formatted_address);
-  }
-};
 
   function setLocation() {
   if (navigator.geolocation) {
@@ -218,9 +201,6 @@ const onEndPlaceChanged = () => {
           <div className="header">
             <h1>GPS Tracker</h1>
             <div className="input-container">
-              <Autocomplete
-                    onLoad={(autocomplete) => (startAutocompleteRef.current = autocomplete)}
-                    onPlaceChanged={onStartPlaceChanged}>
               <input
                 className="search-bar"
                 type="text"
@@ -228,11 +208,6 @@ const onEndPlaceChanged = () => {
                 value={start}
                 onChange={(e) => setStart(e.target.value)}
               />
-              </Autocomplete>
-              <Autocomplete 
-              onLoad={(autocomplete) => (endAutocompleteRef.current = autocomplete)}
-              onPlaceChanged={onEndPlaceChanged}
-              >
               <input
                 className="search-bar"
                 type="text"
@@ -240,7 +215,6 @@ const onEndPlaceChanged = () => {
                 value={end}
                 onChange={(e) => setEnd(e.target.value)}
               />
-              </Autocomplete>
               <label htmlFor="vehicle">Vehicle type:</label>
               <select
                 name="vehicle"
