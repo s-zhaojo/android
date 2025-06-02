@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { doSignOut } from '../firebase/auth'
 import { Marker } from '@react-google-maps/api';
 
+
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
 let infoWindow;
@@ -77,7 +78,7 @@ const MapComponent = () => {
         };
         console.log("User location:", pos);
         setMapCenter(pos);
-        setUserLocation(pos);  // set marker position
+        setUserLocation(pos);  
         setZoom(16);
       },
       (error) => {
@@ -94,7 +95,34 @@ const MapComponent = () => {
   }
 }
 
+useEffect(() => {
+  if (navigator.geolocation) {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setUserLocation(pos);
+        setMapCenter(pos);
+        setZoom(16);
+      },
+      (error) => {
+        console.error("Error watching position:", error);
+        alert("Error getting location: " + error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000,
+      }
+    );
 
+    return () => navigator.geolocation.clearWatch(watchId);
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}, []);
 
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
