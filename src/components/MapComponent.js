@@ -302,7 +302,38 @@ const stopLocationTracking = () => {
           </div>
 
           <div className="map-container">
-            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            <LoadScript
+  googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+  libraries={['places']}
+  onLoad={() => {
+    if (startRef.current && endRef.current && window.google) {
+      const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
+        types: ['geocode'],
+      });
+      autocompleteStart.addListener('place_changed', () => {
+        const place = autocompleteStart.getPlace();
+        if (place.formatted_address) {
+          setStart(place.formatted_address);
+        } else {
+          setStart(place.name || '');
+        }
+      });
+
+      const autocompleteEnd = new window.google.maps.places.Autocomplete(endRef.current, {
+        types: ['geocode'],
+      });
+      autocompleteEnd.addListener('place_changed', () => {
+        const place = autocompleteEnd.getPlace();
+        if (place.formatted_address) {
+          setEnd(place.formatted_address);
+        } else {
+          setEnd(place.name || '');
+        }
+      });
+    }
+  }}
+>
+
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={mapCenter}
