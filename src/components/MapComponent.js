@@ -68,48 +68,32 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
 
-  useEffect(() => {
+  function setLocation() {
   if (navigator.geolocation) {
-    const watchId = navigator.geolocation.watchPosition(
+    navigator.geolocation.watchPosition(
       (position) => {
         const pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
         console.log("User location:", pos);
-        setUserLocation(pos);
         setMapCenter(pos);
+        setUserLocation(pos);  
         setZoom(16);
       },
       (error) => {
-        console.error("Geolocation error:", error);
-        if (error.code === error.TIMEOUT) {
-          alert("Location request timed out. Trying again...");
-        } else if (error.code === error.PERMISSION_DENIED) {
-          alert("Permission denied. Please enable location access.");
-        } else {
-          alert("Error getting location: " + error.message);
-        }
-        // Optionally: fallback location
-        setMapCenter({ lat: 37.7749, lng: -122.4194 }); // San Francisco
-        setZoom(10);
+        alert("Error getting location: " + error.message);
       },
       {
         enableHighAccuracy: true,
-        timeout: 15000, // 🔼 Increase timeout to 15 seconds
-        maximumAge: 10000, // use recent location if available
+        maximumAge: 0,
+        timeout: 5000,
       }
     );
-
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
   } else {
-    alert("Geolocation is not supported by your browser.");
+    alert("Geolocation is not supported by this browser.");
   }
-}, []);
-
-
+}
 
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
@@ -179,6 +163,7 @@ const MapComponent = () => {
       <div className="container">
         <div className="sidebar">
           <div className = "card">
+            <button onClick = {setLocation}>get location</button>
             <img src={GPS} alt="GPS" width="100%" height="55%"/>
             <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
                         {
