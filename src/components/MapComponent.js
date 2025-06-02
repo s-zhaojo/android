@@ -4,6 +4,7 @@ import {
   LoadScript,
   DirectionsService,
   DirectionsRenderer,
+  places
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
@@ -224,7 +225,7 @@ const stopLocationTracking = () => {
 
         <div className="main-content">
           <div className="header">
-            <h1>GPS Tracker</h1>
+            <h1>Emitrack</h1>
             <div className="input-container">
               <input
                 className="search-bar"
