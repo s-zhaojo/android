@@ -4,6 +4,7 @@ import {
   LoadScript,
   DirectionsService,
   DirectionsRenderer,
+  Marker
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
@@ -267,6 +268,13 @@ const MapComponent = () => {
                     }}
                   />
                 )}
+                <Marker
+                  position={mapCenter}
+                  icon={{
+                    url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                    scaledSize: new window.google.maps.Size(40, 40),
+                  }}
+                />
               </GoogleMap>
             </LoadScript>
           </div>
