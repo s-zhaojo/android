@@ -10,6 +10,7 @@ import GPS from './GPS.jpg';
 import { useAuth } from '../contexts/authContext';
 import { Link, useNavigate } from 'react-router-dom'
 import { doSignOut } from '../firebase/auth'
+import { Marker } from '@react-google-maps/api';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
 
@@ -47,6 +48,7 @@ const speeds = {
 const MapComponent = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate()
+  const [userLocation, setUserLocation] = useState(null);
   const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
   const [zoom, setZoom] = useState(10);
@@ -67,26 +69,30 @@ const MapComponent = () => {
 
   function setLocation() {
   if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setMapCenter(pos);
-          setZoom(20);
-        },
-        () => {
-          alert("error could do pos");
-        },
-      );
-    }
-    
-    else {
-      // Browser doesn't support Geolocation
-      alert("error no suppor position");
-    }
+    navigator.geolocation.watchPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setMapCenter(pos);
+        setUserLocation(pos);  // set marker position
+        setZoom(16);
+      },
+      (error) => {
+        alert("Error getting location: " + error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000,
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
 }
+
 
 
   const handleDirectionsResponse = (result, status) => {
@@ -267,9 +273,18 @@ const MapComponent = () => {
                     }}
                   />
                 )}
+                {userLocation && (
+                <Marker
+                 position={userLocation}
+                 icon={{
+                  url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                }}
+                />
+                )}
               </GoogleMap>
             </LoadScript>
           </div>
+          
 
           <div className="trip-details">
             {directions && (
