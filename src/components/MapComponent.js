@@ -225,7 +225,7 @@ const stopLocationTracking = () => {
 
         <div className="main-content">
           <div className="header">
-            <h1>Emitrack</h1>
+            <h1>CO2 Tracker</h1>
             <div className="input-container">
               <input
                 className="search-bar"
