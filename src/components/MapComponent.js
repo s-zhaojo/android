@@ -75,6 +75,7 @@ const MapComponent = () => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        console.log("User location:", pos);
         setMapCenter(pos);
         setUserLocation(pos);  // set marker position
         setZoom(16);
