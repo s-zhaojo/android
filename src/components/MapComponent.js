@@ -4,6 +4,7 @@ import {
   LoadScript,
   DirectionsService,
   DirectionsRenderer,
+  Autocomplete,
 } from '@react-google-maps/api';
 import './styles.css';
 import GPS from './GPS.jpg';
@@ -226,20 +227,33 @@ const stopLocationTracking = () => {
           <div className="header">
             <h1>GPS Tracker</h1>
             <div className="input-container">
-              <input
-                className="search-bar"
-                type="text"
-                placeholder="Start Location"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-              />
-              <input
-                className="search-bar"
-                type="text"
-                placeholder="End Location"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-              />
+              <Autocomplete
+                onLoad={(auto) => setAutocompleteStart(auto)}
+                onPlaceChanged={() => {
+                const place = autocompleteStart.getPlace();
+                setStart(place.formatted_address || place.name);
+              }}
+              >
+               <input
+                  className="search-bar"
+                  type="text"
+                  placeholder="Start Location"
+                />
+              </Autocomplete>
+
+              <Autocomplete
+                onLoad={(auto) => setAutocompleteEnd(auto)}
+                onPlaceChanged={() => {
+                  const place = autocompleteEnd.getPlace();
+                  setEnd(place.formatted_address || place.name);
+                }}
+              >
+                <input
+                   className="search-bar"
+                    type="text"
+                    placeholder="End Location"
+                />
+              </Autocomplete>
               <label htmlFor="vehicle">Vehicle type:</label>
               <select
                 name="vehicle"
@@ -265,7 +279,10 @@ const stopLocationTracking = () => {
           </div>
 
           <div className="map-container">
-            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            <LoadScript
+              googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+              libraries={['places']}
+            >
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={mapCenter}
