@@ -53,6 +53,8 @@ const MapComponent = () => {
   const [userLocation, setUserLocation] = useState(null);
   const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
+  const [autocompleteStart, setAutocompleteStart] = useState(null);
+  const [autocompleteEnd, setAutocompleteEnd] = useState(null);
   const [watchId, setWatchId] = useState(null);
   const [isTracking, setIsTracking] = useState(false);
   const [zoom, setZoom] = useState(10);
