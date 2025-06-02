@@ -68,32 +68,40 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
 
-  function setLocation() {
+const setLocation = () => {
   if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         const pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
         console.log("User location:", pos);
+        setUserLocation(pos);
         setMapCenter(pos);
-        setUserLocation(pos);  
         setZoom(16);
       },
       (error) => {
-        alert("Error getting location: " + error.message);
+        console.error("Geolocation error:", error);
+        if (error.code === error.TIMEOUT) {
+          alert("Location request timed out. Please try again.");
+        } else if (error.code === error.PERMISSION_DENIED) {
+          alert("Permission denied. Please allow location access.");
+        } else {
+          alert("Error getting location: " + error.message);
+        }
       },
       {
         enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000,
+        timeout: 15000, // More generous timeout
+        maximumAge: 10000,
       }
     );
   } else {
-    alert("Geolocation is not supported by this browser.");
+    alert("Geolocation is not supported by your browser.");
   }
-}
+};
+
 
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
