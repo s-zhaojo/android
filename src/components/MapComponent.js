@@ -52,6 +52,8 @@ const MapComponent = () => {
   const [userLocation, setUserLocation] = useState(null);
   const { userLoggedIn } = useAuth()
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
+  const [watchId, setWatchId] = useState(null);
+  const [isTracking, setIsTracking] = useState(false);
   const [zoom, setZoom] = useState(10);
   const [directions, setDirections] = useState(null);
   const [start, setStart] = useState('');
@@ -70,7 +72,7 @@ const MapComponent = () => {
 
 const setLocation = () => {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
+    const id = navigator.geolocation.watchPosition(
       (position) => {
         const pos = {
           lat: position.coords.latitude,
@@ -83,22 +85,27 @@ const setLocation = () => {
       },
       (error) => {
         console.error("Geolocation error:", error);
-        if (error.code === error.TIMEOUT) {
-          alert("Location request timed out. Please try again.");
-        } else if (error.code === error.PERMISSION_DENIED) {
-          alert("Permission denied. Please allow location access.");
-        } else {
-          alert("Error getting location: " + error.message);
-        }
+        alert("Error getting location: " + error.message);
       },
       {
         enableHighAccuracy: true,
-        timeout: 15000, // More generous timeout
-        maximumAge: 10000,
+        timeout: 15000,
+        maximumAge: 1000,
       }
     );
+    setWatchId(id);
+    setIsTracking(true);
   } else {
-    alert("Geolocation is not supported by your browser.");
+    alert("Geolocation is not supported by this browser.");
+  }
+};
+
+const stopLocationTracking = () => {
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    setWatchId(null);
+    setIsTracking(false);
+    setUserLocation(null); // optional: hide marker when tracking stops
   }
 };
 
@@ -171,7 +178,11 @@ const setLocation = () => {
       <div className="container">
         <div className="sidebar">
           <div className = "card">
-            <button onClick = {setLocation}>get location</button>
+            {!isTracking ? (
+             <button onClick={setLocation}>Get Location</button>
+              ) : (
+                    <button onClick={stopLocationTracking}>Stop Location</button>
+              )}
             <img src={GPS} alt="GPS" width="100%" height="55%"/>
             <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
                         {
