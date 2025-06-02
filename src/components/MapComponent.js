@@ -95,35 +95,6 @@ const MapComponent = () => {
   }
 }
 
-useEffect(() => {
-  if (navigator.geolocation) {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        setUserLocation(pos);
-        setMapCenter(pos);
-        setZoom(16);
-      },
-      (error) => {
-        console.error("Error watching position:", error);
-        alert("Error getting location: " + error.message);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000,
-      }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
-}, []);
-
   const handleDirectionsResponse = (result, status) => {
     if (status === 'OK') {
       setDirections(result);
