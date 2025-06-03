@@ -72,37 +72,6 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  useEffect(() => {
-  if (!window.google || !window.google.maps) return;
-
-  const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
-    types: ['geocode'],
-  });
-
-  autocompleteStart.addListener('place_changed', () => {
-    const place = autocompleteStart.getPlace();
-    if (place.formatted_address) {
-      setStart(place.formatted_address);
-    } else if (place.name) {
-      setStart(place.name);
-    }
-  });
-
-  const autocompleteEnd = new window.google.maps.places.Autocomplete(endRef.current, {
-    types: ['geocode'],
-  });
-
-  autocompleteEnd.addListener('place_changed', () => {
-    const place = autocompleteEnd.getPlace();
-    if (place.formatted_address) {
-      setEnd(place.formatted_address);
-    } else if (place.name) {
-      setEnd(place.name);
-    }
-  });
-
-}, []);
-
 
 
 const setLocation = () => {
