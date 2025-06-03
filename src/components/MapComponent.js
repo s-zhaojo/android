@@ -138,7 +138,7 @@ const stopLocationTracking = () => {
         truck: distInMiles * carbonEmissions.truck,
         bus: distInMiles * carbonEmissions.bus,
         motorcycle: distInMiles * carbonEmissions.motorcycle,
-        airlane: distInMiles * carbonEmissions.airplane,
+        airplane: distInMiles * carbonEmissions.airplane,
       };
       setEmissions(modeEmissions);
 
