@@ -146,7 +146,9 @@ const stopLocationTracking = () => {
       Object.keys(speeds).forEach((mode) => {
         const speed = speeds[mode];
         const durationInHours = distInMiles / speed;
-        modeDurations[mode] = `${durationInHours.toFixed(2)} hours`;
+        const hours = Math.floor(durationInHours);
+        const minutes = Math.round((durationInHours - hours) * 60);
+        modeDurations[mode] = `${hours}h ${minutes}m`;
       });
       setDurationsByMode(modeDurations);
     } else {
