@@ -11,7 +11,8 @@ import GPS from './GPS.jpg';
 import { useAuth } from '../contexts/authContext';
 import { Link, useNavigate } from 'react-router-dom'
 import { doSignOut } from '../firebase/auth'
-import { Marker } from '@react-google-maps/api';
+import { Marker, Polyline } from '@react-google-maps/api';
+
 
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD2So3MFuZo2C7B_qfrD1I-3mmaPuzl-rQ';
@@ -48,6 +49,8 @@ const speeds = {
 };
 
 const MapComponent = () => {
+  const [path, setPath] = useState([]);        
+  const [autoCenter, setAutoCenter] = useState(true); 
   const startRef = useRef(null);
   const endRef = useRef(null);
   const { currentUser } = useAuth();
@@ -84,8 +87,11 @@ const setLocation = () => {
         };
         console.log("User location:", pos);
         setUserLocation(pos);
-        setMapCenter(pos);
+        if (autoCenter) {
+          setMapCenter(pos);
+        }
         setZoom(16);
+        setPath((prevPath) => [...prevPath, pos]); // Add to trail
       },
       (error) => {
         console.error("Geolocation error:", error);
@@ -104,14 +110,17 @@ const setLocation = () => {
   }
 };
 
+
 const stopLocationTracking = () => {
   if (watchId !== null) {
     navigator.geolocation.clearWatch(watchId);
     setWatchId(null);
     setIsTracking(false);
-    setUserLocation(null); // optional: hide marker when tracking stops
+    setUserLocation(null);
+    setPath([]); 
   }
 };
+
 
 
   const handleDirectionsResponse = (result, status) => {
@@ -129,7 +138,7 @@ const stopLocationTracking = () => {
         truck: distInMiles * carbonEmissions.truck,
         bus: distInMiles * carbonEmissions.bus,
         motorcycle: distInMiles * carbonEmissions.motorcycle,
-        airplane: distInMiles * carbonEmissions.airplane,
+        airlane: distInMiles * carbonEmissions.airplane,
       };
       setEmissions(modeEmissions);
 
@@ -306,40 +315,52 @@ const stopLocationTracking = () => {
 >
 
               <GoogleMap
-                mapContainerStyle={containerStyle}
-                center={mapCenter}
-                zoom={zoom}
-              >
-                {isRequestingDirections && start && end && (
-                  <DirectionsService
-                    options={{
-                      destination: end,
-                      origin: start,
-                      travelMode: 'DRIVING',
-                    }}
-                    callback={handleDirectionsResponse}
-                  />
-                )}
-                {directions && (
-                  <DirectionsRenderer
-                    directions={directions}
-                    options={{
-                      polylineOptions: {
-                        strokeColor: '#4CAF50',
-                        strokeWeight: 5,
-                      },
-                    }}
-                  />
-                )}
-                {userLocation && (
-                <Marker
-                 position={userLocation}
-                 icon={{
-                  url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-                }}
-                />
-                )}
-              </GoogleMap>
+  mapContainerStyle={containerStyle}
+  center={autoCenter ? mapCenter : undefined}
+  zoom={zoom}
+  onDragStart={() => setAutoCenter(false)}
+>
+  {isRequestingDirections && start && end && (
+    <DirectionsService
+      options={{
+        destination: end,
+        origin: start,
+        travelMode: 'DRIVING',
+      }}
+      callback={handleDirectionsResponse}
+    />
+  )}
+  {directions && (
+    <DirectionsRenderer
+      directions={directions}
+      options={{
+        polylineOptions: {
+          strokeColor: '#4CAF50',
+          strokeWeight: 5,
+        },
+      }}
+    />
+  )}
+  {userLocation && (
+    <Marker
+      position={userLocation}
+      icon={{
+        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      }}
+    />
+  )}
+  {path.length > 1 && (
+    <Polyline
+      path={path}
+      options={{
+        strokeColor: "#4285F4",
+        strokeOpacity: 0.8,
+        strokeWeight: 4,
+      }}
+    />
+  )}
+</GoogleMap>
+
             </LoadScript>
           </div>
           
