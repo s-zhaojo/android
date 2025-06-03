@@ -72,8 +72,6 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  
-
   useEffect(() => {
   if (!window.google || !window.google.maps) return;
 
