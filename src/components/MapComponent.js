@@ -277,7 +277,7 @@ const stopLocationTracking = () => {
   onLoad={() => {
     if (startRef.current && endRef.current && window.google) {
       const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
-        types: ['geocode'],
+        types: ['geocode', 'establishment'],
       });
       autocompleteStart.addListener('place_changed', () => {
         const place = autocompleteStart.getPlace();
@@ -289,7 +289,7 @@ const stopLocationTracking = () => {
       });
 
       const autocompleteEnd = new window.google.maps.places.Autocomplete(endRef.current, {
-        types: ['geocode'],
+        types: ['geocode', 'establishment'],
       });
       autocompleteEnd.addListener('place_changed', () => {
         const place = autocompleteEnd.getPlace();
