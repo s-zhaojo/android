@@ -73,6 +73,12 @@ const MapComponent = () => {
   const [totalEmissions, setTotalEmissions] = useState(0);
 
   useEffect(() => {
+  if (userLocation) {
+    setMapCenter(userLocation);
+  }
+}, [userLocation]);
+
+  useEffect(() => {
   if (!window.google || !window.google.maps) return;
 
   const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
