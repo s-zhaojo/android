@@ -160,6 +160,10 @@ const stopLocationTracking = () => {
         modeDurations[mode] = `${hours}h ${minutes}m`;
       });
       setDurationsByMode(modeDurations);
+
+      setTotalDistance(prev => prev + distInKm);
+      setTotalEmissions(prev => prev + modeEmissions[selectedVehicle]);
+      setTotalCost(prev => prev + modeCosts[selectedVehicle]);
     } else {
       console.error('Error fetching directions:', status);
       alert('Failed to fetch directions. Please check your locations.');
@@ -217,24 +221,29 @@ const stopLocationTracking = () => {
           </div>
           <div className="card">
             <h3>Total Distance</h3>
-            <p>{distance / 1000} km / {(distance * 0.000621371).toFixed(2)} miles</p>
+            <p>{totalDistance.toFixed(2)} km / {(totalDistance * 0.621371).toFixed(2)} miles</p>
           </div>
           <div className="card">
             <h3>Total Cost</h3>
             <p>
-              {costs && costs[selectedVehicle]
-                ? `$${costs[selectedVehicle].toFixed(2)}`
-                : '$0'}
+              ${totalCost.toFixed(2)}
             </p>
           </div>
           <div className="card">
             <h3>Total CO2 Emissions</h3>
             <p>
-              {emissions && emissions[selectedVehicle]
-                ? `${emissions[selectedVehicle].toFixed(2)} kg CO2`
-                : '0 kg CO2'}
+              {totalEmissions.toFixed(2)} kg CO2
             </p>
           </div>
+          <div className="card">
+  <button onClick={() => {
+    setTotalDistance(0);
+    setTotalCost(0);
+    setTotalEmissions(0);
+  }}>
+    Reset Totals
+  </button>
+</div>
         </div>
 
         <div className="main-content">
@@ -270,13 +279,8 @@ const stopLocationTracking = () => {
                 <option value="motorcycle">Motorcycle</option>
                 <option value="airplane">Airplane</option>
               </select>
-              <button
-                onClick={() => {
-                  requestDirections();
-                  handleModeSelect(selectedVehicle);
-                }}
-              >
-                Get Directions
+              <button onClick={requestDirections}>
+                  Get Directions
               </button>
             </div>
           </div>
