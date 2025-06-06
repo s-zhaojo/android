@@ -172,17 +172,72 @@ const stopLocationTracking = () => {
   };
 
   const requestDirections = () => {
-    if (!start || !end) {
-      alert('Please enter both start and end locations.');
-      return;
-    }
-    setIsRequestingDirections(true);
-    setDirections(null);
-    setDistance(null);
-    setEmissions(null);
-    setCosts(null);
-    setDurationsByMode(null);
-  };
+  if (!start || !end) {
+    alert('Please enter both start and end locations.');
+    return;
+  }
+
+  setIsRequestingDirections(true);
+
+  if (selectedVehicle === 'airplane') {
+    const geocoder = new window.google.maps.Geocoder();
+
+    geocoder.geocode({ address: start }, (startResults, status1) => {
+      if (status1 === 'OK' && startResults.length > 0) {
+        const startLoc = startResults[0].geometry.location;
+
+        geocoder.geocode({ address: end }, (endResults, status2) => {
+          if (status2 === 'OK' && endResults.length > 0) {
+            const endLoc = endResults[0].geometry.location;
+
+            const distanceMeters = window.google.maps.geometry.spherical.computeDistanceBetween(startLoc, endLoc);
+            const distanceKm = distanceMeters / 1000;
+            const distanceMiles = distanceKm * 0.621371;
+
+            // Calculate emissions, cost, and duration
+            const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
+            const airplaneCost = distanceMiles * transportationCosts.airplane;
+            const airplaneDuration = distanceMiles / speeds.airplane;
+            const hours = Math.floor(airplaneDuration);
+            const minutes = Math.round((airplaneDuration - hours) * 60);
+
+            setDistance(distanceMeters);
+            setEmissions({ airplane: airplaneEmissions });
+            setCosts({ airplane: airplaneCost });
+            setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
+
+            setTotalDistance(prev => prev + distanceKm);
+            setTotalEmissions(prev => prev + airplaneEmissions);
+            setTotalCost(prev => prev + airplaneCost);
+
+            // Center map between start and end
+            const bounds = new window.google.maps.LatLngBounds();
+            bounds.extend(startLoc);
+            bounds.extend(endLoc);
+            setMapCenter(bounds.getCenter());
+            setZoom(3); // Zoomed out view for airplane
+
+          } else {
+            alert('End location could not be found.');
+          }
+        });
+      } else {
+        alert('Start location could not be found.');
+      }
+    });
+
+    setIsRequestingDirections(false);
+    return;
+  }
+
+  // Handle normal directions (DRIVING, etc.)
+  setDirections(null);
+  setDistance(null);
+  setEmissions(null);
+  setCosts(null);
+  setDurationsByMode(null);
+};
+
 
   const handleModeSelect = (mode) => {
     if (emissions && emissions[selectedVehicle]) {
@@ -334,7 +389,7 @@ const stopLocationTracking = () => {
       callback={handleDirectionsResponse}
     />
   )}
-  {directions && (
+  {directions && selectedVehicle !== 'airplane' && (
     <DirectionsRenderer
       directions={directions}
       options={{
