@@ -78,61 +78,6 @@ const MapComponent = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [totalEmissions, setTotalEmissions] = useState(0);
 
-  const getConnectingFlights = async (start, end, apiKey) => {
-  const startAirports = await getAirportsNearLocation(start);
-
-  const connections = [];
-
-  for (const startAirport of startAirports) {
-    const connection = await getFlightsFromAirport(startAirport, end, apiKey);
-    connections.push(...connection);
-  }
-
-  return connections;
-};
-
-const getAirportsNearLocation = async (location) => {
-  const geocoder = new window.google.maps.Geocoder();
-  const results = await geocoder.geocode({ address: location });
-
-  const lat = results[0].geometry.location.lat();
-  const lng = results[0].geometry.location.lng();
-
-  const placesService = new window.google.maps.places.PlacesService(document.createElement("div"));
-  const request = {
-    location: new window.google.maps.LatLng(lat, lng),
-    radius: 50000, 
-    type: ['airport'],
-  };
-
-  return new Promise((resolve, reject) => {
-    placesService.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        resolve(results.map(place => place.name)); 
-      } else {
-        reject("No airports found");
-      }
-    });
-  });
-};
-
-const getFlightsFromAirport = async (startAirport, endLocation, apiKey) => {
-  const base_url = 'http://api.aviationstack.com/v1/flights';
-  try {
-    const response = await axios.get(base_url, {
-      params: {
-        access_key: apiKey,
-        dep_iata: startAirport,
-        arr_iata: endLocation,   
-      },
-    });
-    return response.data.data || [];
-  } catch (error) {
-    console.error('Error fetching flight connections:', error);
-    return [];
-  }
-};
-
 
 
 const setLocation = () => {
@@ -149,7 +94,7 @@ const setLocation = () => {
           setMapCenter(pos);
         }
         setZoom(16);
-        setPath((prevPath) => [...prevPath, pos]); 
+        setPath((prevPath) => [...prevPath, pos]); // Add to trail
       },
       (error) => {
         console.error("Geolocation error:", error);
@@ -199,7 +144,6 @@ const stopLocationTracking = () => {
     setPath([]); 
   }
 };
-
 
 
 
@@ -260,94 +204,109 @@ const stopLocationTracking = () => {
   setIsRequestingDirections(true);
 
  const requestDirections = async () => {
-  if (!start || !end) {
-    alert('Please enter both start and end locations.');
-    return;
-  }
-
   setIsRequestingDirections(true);
 
-  if (selectedVehicle === 'airplane') {
-    if (!flightNumber) {
-      alert('Please enter a flight number.');
-      setIsRequestingDirections(false);
-      return;
-    }
-
-    const api_key = 'f4d2bf2a93511f41e5ed87179195b0ac';
-    const base_url = 'http://api.aviationstack.com/v1/flights';
-    
-    try {
-      // First, try fetching direct flight information
-      const directFlightResponse = await axios.get(base_url, {
-        params: {
-          access_key: api_key,
-          flight_iata: flightNumber,
-        },
-      });
-
-      let flightData = directFlightResponse.data.data?.[0];
-
-      // If direct flight is not found, search for connecting flights
-      if (!flightData) {
-        console.log("Direct flight not found, searching for connecting flights...");
-        // We will break the journey into segments and fetch connecting flights
-        const connections = await getConnectingFlights(start, end, api_key);
-        if (!connections.length) {
-          alert('No connecting flights found.');
-          setIsRequestingDirections(false);
-          return;
-        }
-        
-        // For simplicity, we just show the first found connection
-        flightData = connections[0];
-      }
-
-      // Now handle the flight data, assuming `flightData` exists
-      const { departure, arrival } = flightData;
-      const startLoc = new window.google.maps.LatLng(departure.latitude, departure.longitude);
-      const endLoc = new window.google.maps.LatLng(arrival.latitude, arrival.longitude);
-
-      const distanceMeters = window.google.maps.geometry.spherical.computeDistanceBetween(
-        startLoc, endLoc
-      );
-      const distanceKm = distanceMeters / 1000;
-      const distanceMiles = distanceKm * 0.621371;
-
-      const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
-      const airplaneCost = distanceMiles * transportationCosts.airplane;
-      const airplaneDuration = distanceMiles / speeds.airplane;
-      const hours = Math.floor(airplaneDuration);
-      const minutes = Math.round((airplaneDuration - hours) * 60);
-
-      setFlightTime(`${hours}h ${minutes}m`);
-
-      setDistance(distanceMeters);
-      setEmissions({ airplane: airplaneEmissions });
-      setCosts({ airplane: airplaneCost });
-      setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
-
-      setTotalDistance((prev) => prev + distanceKm);
-      setTotalEmissions((prev) => prev + airplaneEmissions);
-      setTotalCost((prev) => prev + airplaneCost);
-
-      const bounds = new window.google.maps.LatLngBounds();
-      bounds.extend(startLoc);
-      bounds.extend(endLoc);
-      setMapCenter(bounds.getCenter());
-      setZoom(3);
-    } catch (error) {
-      console.error('Error fetching flight data:', error);
-      alert('Failed to fetch airplane flight data.');
-    }
+if (selectedVehicle === 'airplane') {
+  if (!flightNumber) {
+    alert('Please enter a flight number.');
     setIsRequestingDirections(false);
     return;
   }
 
-  // Continue with other vehicle types (driving, bus, etc.)
+  const api_key = 'f4d2bf2a93511f41e5ed87179195b0ac';
+  const base_url = 'http://api.aviationstack.com/v1/flights';
+
+  try {
+    const response = await axios.get(base_url, {
+      params: {
+        access_key: api_key,
+        flight_iata: flightNumber,
+      },
+    });
+
+    const flightData = response.data.data?.[0];
+    if (!flightData || !flightData.departure || !flightData.arrival) {
+      alert('Flight data not available.');
+      setIsRequestingDirections(false);
+      return;
+    }
+
+    const { departure, arrival } = flightData;
+
+    if (
+      !departure.latitude ||
+      !departure.longitude ||
+      !arrival.latitude ||
+      !arrival.longitude
+    ) {
+      alert('Invalid flight coordinates.');
+      setIsRequestingDirections(false);
+      return;
+    }
+
+    const startLoc = new window.google.maps.LatLng(
+      departure.latitude,
+      departure.longitude
+    );
+    const endLoc = new window.google.maps.LatLng(
+      arrival.latitude,
+      arrival.longitude
+    );
+
+    const distanceMeters =
+      window.google.maps.geometry.spherical.computeDistanceBetween(
+        startLoc,
+        endLoc
+      );
+    const distanceKm = distanceMeters / 1000;
+    const distanceMiles = distanceKm * 0.621371;
+
+    const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
+    const airplaneCost = distanceMiles * transportationCosts.airplane;
+    const airplaneDuration = distanceMiles / speeds.airplane;
+    const hours = Math.floor(airplaneDuration);
+    const minutes = Math.round((airplaneDuration - hours) * 60);
+
+    // Set the flight time (duration) here
+    setFlightTime(`${hours}h ${minutes}m`);
+
+    setDistance(distanceMeters);
+    setEmissions({ airplane: airplaneEmissions });
+    setCosts({ airplane: airplaneCost });
+    setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
+
+    setTotalDistance((prev) => prev + distanceKm);
+    setTotalEmissions((prev) => prev + airplaneEmissions);
+    setTotalCost((prev) => prev + airplaneCost);
+
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(startLoc);
+    bounds.extend(endLoc);
+    setMapCenter(bounds.getCenter());
+    setZoom(3);
+  } catch (error) {
+    console.error('Error fetching flight data:', error);
+    alert('Failed to fetch airplane flight data.');
+  }
+
+  setIsRequestingDirections(false);
+  return;
+}
+
+
+  // Continue with other vehicle types here...
+
   setIsRequestingDirections(false);
 };
-  }
+
+
+  // Handle normal directions (DRIVING, etc.)
+  setDirections(null);
+  setDistance(null);
+  setEmissions(null);
+  setCosts(null);
+  setDurationsByMode(null);
+};
 
 
   const handleModeSelect = (mode) => {
@@ -597,22 +556,8 @@ const stopLocationTracking = () => {
                 </div>
                 
                 <div className="card">
-  <h3>Connecting Flights</h3>
-  {getConnectingFlights.length ? (
-    <ul>
-      {getConnectingFlights.map((flight, index) => (
-        <li key={index}>
-          <p><strong>Flight {index + 1}:</strong></p>
-          <p>{flight.start} → {flight.stop} → {flight.end}</p>
-          <p>Duration: {flight.duration}</p>
-          <p>Emissions: {flight.emissions} kg CO2</p>
-          <p>Cost: ${flight.cost}</p>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No connecting flights available.</p>
-  )}
+  <h3>Airplane Flight Duration</h3>
+  <p>{flightTime || "Please enter a flight number to see the flight time."}</p>
 </div>
 
                 <div className="card">
