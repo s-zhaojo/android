@@ -598,9 +598,9 @@ const stopLocationTracking = () => {
                 
                 <div className="card">
   <h3>Connecting Flights</h3>
-  {connectingFlights.length ? (
+  {getConnectingFlights.length ? (
     <ul>
-      {connectingFlights.map((flight, index) => (
+      {getConnectingFlights.map((flight, index) => (
         <li key={index}>
           <p><strong>Flight {index + 1}:</strong></p>
           <p>{flight.start} → {flight.stop} → {flight.end}</p>
