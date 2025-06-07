@@ -12,6 +12,8 @@ import { useAuth } from '../contexts/authContext';
 import { Link, useNavigate } from 'react-router-dom'
 import { doSignOut } from '../firebase/auth'
 import { Marker, Polyline } from '@react-google-maps/api';
+import axios from 'axios';
+
 
 
 
@@ -70,6 +72,7 @@ const MapComponent = () => {
   const [costs, setCosts] = useState(null);
   const [durationsByMode, setDurationsByMode] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState('car');
+  const [flightNumber, setFlightNumber] = useState('');
 
   const [totalDistance, setTotalDistance] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -200,56 +203,98 @@ const stopLocationTracking = () => {
 
   setIsRequestingDirections(true);
 
+ const requestDirections = async () => {
+  setIsRequestingDirections(true);
+
   if (selectedVehicle === 'airplane') {
-    const geocoder = new window.google.maps.Geocoder();
+    if (!flightNumber) {
+      alert('Please enter a flight number.');
+      setIsRequestingDirections(false);
+      return;
+    }
 
-    geocoder.geocode({ address: start }, (startResults, status1) => {
-      if (status1 === 'OK' && startResults.length > 0) {
-        const startLoc = startResults[0].geometry.location;
+    const api_key = 'f4d2bf2a93511f41e5ed87179195b0ac';
+    const base_url = 'http://api.aviationstack.com/v1/flights';
 
-        geocoder.geocode({ address: end }, (endResults, status2) => {
-          if (status2 === 'OK' && endResults.length > 0) {
-            const endLoc = endResults[0].geometry.location;
+    try {
+      const response = await axios.get(base_url, {
+        params: {
+          access_key: api_key,
+          flight_iata: flightNumber,
+        },
+      });
 
-            const distanceMeters = window.google.maps.geometry.spherical.computeDistanceBetween(startLoc, endLoc);
-            const distanceKm = distanceMeters / 1000;
-            const distanceMiles = distanceKm * 0.621371;
-
-            // Calculate emissions, cost, and duration
-            const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
-            const airplaneCost = distanceMiles * transportationCosts.airplane;
-            const airplaneDuration = distanceMiles / speeds.airplane;
-            const hours = Math.floor(airplaneDuration);
-            const minutes = Math.round((airplaneDuration - hours) * 60);
-
-            setDistance(distanceMeters);
-            setEmissions({ airplane: airplaneEmissions });
-            setCosts({ airplane: airplaneCost });
-            setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
-
-            setTotalDistance(prev => prev + distanceKm);
-            setTotalEmissions(prev => prev + airplaneEmissions);
-            setTotalCost(prev => prev + airplaneCost);
-
-            // Center map between start and end
-            const bounds = new window.google.maps.LatLngBounds();
-            bounds.extend(startLoc);
-            bounds.extend(endLoc);
-            setMapCenter(bounds.getCenter());
-            setZoom(3); // Zoomed out view for airplane
-
-          } else {
-            alert('End location could not be found.');
-          }
-        });
-      } else {
-        alert('Start location could not be found.');
+      const flightData = response.data.data?.[0];
+      if (!flightData || !flightData.departure || !flightData.arrival) {
+        alert('Flight data not available.');
+        setIsRequestingDirections(false);
+        return;
       }
-    });
+
+      const { departure, arrival } = flightData;
+
+      if (
+        !departure.latitude ||
+        !departure.longitude ||
+        !arrival.latitude ||
+        !arrival.longitude
+      ) {
+        alert('Invalid flight coordinates.');
+        setIsRequestingDirections(false);
+        return;
+      }
+
+      const startLoc = new window.google.maps.LatLng(
+        departure.latitude,
+        departure.longitude
+      );
+      const endLoc = new window.google.maps.LatLng(
+        arrival.latitude,
+        arrival.longitude
+      );
+
+      const distanceMeters =
+        window.google.maps.geometry.spherical.computeDistanceBetween(
+          startLoc,
+          endLoc
+        );
+      const distanceKm = distanceMeters / 1000;
+      const distanceMiles = distanceKm * 0.621371;
+
+      const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
+      const airplaneCost = distanceMiles * transportationCosts.airplane;
+      const airplaneDuration = distanceMiles / speeds.airplane;
+      const hours = Math.floor(airplaneDuration);
+      const minutes = Math.round((airplaneDuration - hours) * 60);
+
+      setDistance(distanceMeters);
+      setEmissions({ airplane: airplaneEmissions });
+      setCosts({ airplane: airplaneCost });
+      setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
+
+      setTotalDistance((prev) => prev + distanceKm);
+      setTotalEmissions((prev) => prev + airplaneEmissions);
+      setTotalCost((prev) => prev + airplaneCost);
+
+      const bounds = new window.google.maps.LatLngBounds();
+      bounds.extend(startLoc);
+      bounds.extend(endLoc);
+      setMapCenter(bounds.getCenter());
+      setZoom(3);
+    } catch (error) {
+      console.error('Error fetching flight data:', error);
+      alert('Failed to fetch airplane flight data.');
+    }
 
     setIsRequestingDirections(false);
     return;
   }
+
+  // Continue with other vehicle types here...
+
+  setIsRequestingDirections(false);
+};
+
 
   // Handle normal directions (DRIVING, etc.)
   setDirections(null);
