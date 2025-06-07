@@ -323,7 +323,7 @@ if (selectedVehicle === 'airplane') {
         <div className="sidebar">
           <div className = "card">
             {!isTracking ? (
-             <button onClick={setLocation}>Get Location</button>
+             <button className = "coolbuttons" onClick={setLocation}>Get Location</button>
               ) : (
                     <button onClick={stopLocationTracking}>Stop Location</button>
               )}
@@ -333,7 +333,7 @@ if (selectedVehicle === 'airplane') {
                             userLoggedIn
                                 ?
                                 <>
-                                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='text-sm text-blue-600 underline'>Logout</button>
+                                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='coolbuttons text-sm text-blue-600 underline'>Logout</button>
                                 </>
                                 :
                                 <>

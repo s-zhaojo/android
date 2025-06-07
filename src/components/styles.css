@@ -168,3 +168,16 @@ button:hover{
   margin: auto;
 }
 
+.coolbuttons{
+  width: 100%;
+    padding: 14px;
+    background: #66bb6a;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
