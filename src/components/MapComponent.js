@@ -110,6 +110,27 @@ const setLocation = () => {
   }
 };
 
+const getBestTransportTips = () => {
+  if (!emissions || !costs || !durationsByMode) return null;
+
+  const durationsInMinutes = Object.entries(durationsByMode).reduce((acc, [mode, value]) => {
+    const [h, m] = value.split('h ').map(s => parseInt(s));
+    acc[mode] = h * 60 + m;
+    return acc;
+  }, {});
+
+  const cheapest = Object.entries(costs).reduce((a, b) => (a[1] < b[1] ? a : b))[0];
+  const greenest = Object.entries(emissions).reduce((a, b) => (a[1] < b[1] ? a : b))[0];
+  const fastest = Object.entries(durationsInMinutes).reduce((a, b) => (a[1] < b[1] ? a : b))[0];
+
+  return {
+    cheapest,
+    greenest,
+    fastest
+  };
+};
+
+
 
 const stopLocationTracking = () => {
   if (watchId !== null) {
@@ -497,6 +518,31 @@ const stopLocationTracking = () => {
                     ))}
                   </ul>
                 </div>
+
+                {emissions && costs && durationsByMode && (
+  <div className="card">
+    <h3>Travel Tips</h3>
+    {(() => {
+      const tips = getBestTransportTips();
+      return tips ? (
+        <ul>
+          <li>
+            🚗 <strong>Fastest:</strong> {tips.fastest.charAt(0).toUpperCase() + tips.fastest.slice(1)}
+          </li>
+          <li>
+            💰 <strong>Cheapest:</strong> {tips.cheapest.charAt(0).toUpperCase() + tips.cheapest.slice(1)}
+          </li>
+          <li>
+            🌱 <strong>Eco-friendliest:</strong> {tips.greenest.charAt(0).toUpperCase() + tips.greenest.slice(1)}
+          </li>
+        </ul>
+      ) : (
+        <p>Calculating best options...</p>
+      );
+    })()}
+  </div>
+)}
+
               </>
             )}
           </div>
