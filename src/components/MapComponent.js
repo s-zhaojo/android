@@ -325,7 +325,7 @@ if (selectedVehicle === 'airplane') {
             {!isTracking ? (
              <button className = "coolbuttons" onClick={setLocation}>Get Location</button>
               ) : (
-                    <button onClick={stopLocationTracking}>Stop Location</button>
+                    <button className = "coolbuttons" onClick={stopLocationTracking}>Stop Location</button>
               )}
             <img src={GPS} alt="GPS" width="100%" height="55%"/>
             <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
