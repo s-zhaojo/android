@@ -94,7 +94,7 @@ const setLocation = () => {
           setMapCenter(pos);
         }
         setZoom(16);
-        setPath((prevPath) => [...prevPath, pos]); // Add to trail
+        setPath((prevPath) => [...prevPath, pos]); 
       },
       (error) => {
         console.error("Geolocation error:", error);
@@ -267,7 +267,6 @@ if (selectedVehicle === 'airplane') {
     const hours = Math.floor(airplaneDuration);
     const minutes = Math.round((airplaneDuration - hours) * 60);
 
-    // Set the flight time (duration) here
     setFlightTime(`${hours}h ${minutes}m`);
 
     setDistance(distanceMeters);
@@ -294,13 +293,11 @@ if (selectedVehicle === 'airplane') {
 }
 
 
-  // Continue with other vehicle types here...
 
   setIsRequestingDirections(false);
 };
 
 
-  // Handle normal directions (DRIVING, etc.)
   setDirections(null);
   setDistance(null);
   setEmissions(null);
