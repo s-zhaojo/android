@@ -372,39 +372,51 @@ if (selectedVehicle === 'airplane') {
           <div className="header">
             <h1>CO2 Tracker</h1>
             <div className="input-container">
-              <input
-                ref={startRef}
-                className="search-bar"
-                type="text"
-                placeholder="Start Location"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-              />
-              <input
-                ref={endRef}
-                className="search-bar"
-                type="text"
-                placeholder="End Location"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-              />
-              <label htmlFor="vehicle">Vehicle type:</label>
-              <select
-                name="vehicle"
-                id="vehicle"
-                value={selectedVehicle}
-                onChange={(e) => setSelectedVehicle(e.target.value)}
-              >
-                <option value="car">Car</option>
-                <option value="truck">Truck</option>
-                <option value="bus">Bus</option>
-                <option value="motorcycle">Motorcycle</option>
-                <option value="airplane">Airplane</option>
-              </select>
-              <button onClick={requestDirections}>
-                  Get Directions
-              </button>
-            </div>
+  <input
+    ref={startRef}
+    className="search-bar"
+    type="text"
+    placeholder="Start Location"
+    value={start}
+    onChange={(e) => setStart(e.target.value)}
+  />
+  <input
+    ref={endRef}
+    className="search-bar"
+    type="text"
+    placeholder="End Location"
+    value={end}
+    onChange={(e) => setEnd(e.target.value)}
+  />
+  <label htmlFor="vehicle">Vehicle type:</label>
+  <select
+    name="vehicle"
+    id="vehicle"
+    value={selectedVehicle}
+    onChange={(e) => setSelectedVehicle(e.target.value)}
+  >
+    <option value="car">Car</option>
+    <option value="truck">Truck</option>
+    <option value="bus">Bus</option>
+    <option value="motorcycle">Motorcycle</option>
+    <option value="airplane">Airplane</option>
+  </select>
+
+  {selectedVehicle === 'airplane' && (
+    <input
+      className="search-bar"
+      type="text"
+      placeholder="Flight Number (e.g. UA100)"
+      value={flightNumber}
+      onChange={(e) => setFlightNumber(e.target.value)}
+    />
+  )}
+
+  <button onClick={requestDirections}>
+    Get Directions
+  </button>
+</div>
+
           </div>
 
           <div className="map-container">
