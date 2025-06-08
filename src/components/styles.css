@@ -38,7 +38,7 @@ body{
 
 .sidebar{
   width: 250px;
-  background-color: blue;
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
   color: white;
   padding: 20px;
   position: fixed;
