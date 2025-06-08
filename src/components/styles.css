@@ -25,6 +25,7 @@ body{
 .input-container{
   display: flex;
   gap: 10px;
+  margin-left: 10px;
 }
 
 .search-bar{
@@ -37,7 +38,7 @@ body{
 
 .sidebar{
   width: 250px;
-  background: linear-gradient(to right, #2193b0, #6dd5ed);
+  background-color: blue;
   color: white;
   padding: 20px;
   position: fixed;
