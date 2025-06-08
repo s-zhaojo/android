@@ -181,3 +181,11 @@ button:hover{
     transition: background 0.3s;
 }
 
+.sidebar {
+  z-index: 10; /* Ensures it's on top */
+}
+
+.map-container {
+  position: relative; /* Needed for z-index to work */
+  z-index: 1; /* Puts it behind the sidebar */
+}
