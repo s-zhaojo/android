@@ -147,7 +147,7 @@ button:hover{
 }
 
 .travel-mode-buttons button{
-  background-color: blue;
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
   color: white;
   padding: 10px 15px;
   font-size: 14px;
