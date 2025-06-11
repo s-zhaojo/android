@@ -201,7 +201,6 @@ const stopLocationTracking = () => {
     return;
   }
 
-  console.log("Selected vehicle:", selectedVehicle);
   setIsRequestingDirections(true);
   setDirections(null);
   setDistance(null);
@@ -212,7 +211,6 @@ const stopLocationTracking = () => {
   const geocoder = new window.google.maps.Geocoder();
 
   if (selectedVehicle === 'airplane') {
-    console.log("Airplane mode engaged.");
     try {
       const [startResult, endResult] = await Promise.all([
         new Promise((resolve, reject) =>
@@ -258,15 +256,17 @@ const stopLocationTracking = () => {
       bounds.extend(endLoc);
       setMapCenter(bounds.getCenter());
       setZoom(3);
+
     } catch (error) {
-      console.error('Error geocoding airplane route:', error);
-      alert('Failed to calculate airplane route.');
+      console.error('Error geocoding for airplane route:', error);
+      alert('Failed to calculate airplane route. Please check the addresses.');
     }
 
     setIsRequestingDirections(false);
     return;
   }
 
+  // Default land vehicle directions:
   const service = new window.google.maps.DirectionsService();
   service.route(
     {
@@ -277,7 +277,6 @@ const stopLocationTracking = () => {
     handleDirectionsResponse
   );
 };
-
 
 
 
