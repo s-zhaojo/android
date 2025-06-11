@@ -1,15 +1,21 @@
-body{
+body {
   font-family: 'Arial', sans-serif;
   font-size: 20px;
   margin: 0;
   padding: 0;
-  background-color:lightblue;
+  background-color: lightblue;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+.main-content {
+  margin-left: 270px;
+  padding: 20px;
+  flex-grow: 1;
 }
 
 .header {
@@ -24,13 +30,13 @@ body{
   border-top-right-radius: 12px;
 }
 
-.input-container{
+.input-container {
   display: flex;
   gap: 10px;
   margin-left: 10px;
 }
 
-.search-bar{
+.search-bar {
   padding: 10px;
   border-radius: 20px;
   border: 1px solid #ddd;
@@ -38,7 +44,7 @@ body{
   width: 200px;
 }
 
-.sidebar{
+.sidebar {
   width: 250px;
   background: linear-gradient(to right, #2193b0, #6dd5ed);
   color: white;
@@ -51,39 +57,39 @@ body{
   flex-direction: column;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  z-index: 10;
 }
 
-.sidebar a{
+.sidebar a {
   color: white;
   text-decoration: none;
   padding: 10px;
   margin-bottom: 20px;
   display: block;
   border-radius: 5px;
+  transition: background-color 0.2s;
 }
 
-.sidebar a:hover{
-  background-color: #444;
+.sidebar a:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-.sidebar .card{
+.sidebar .card {
   background-color: lightblue;
   margin-bottom: 20px;
-  width: 200px
+  width: 200px;
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.main-content{
-  margin-left: 270px;
-  padding: 20px;
-  flex-grow: 1;
-}
-
-.map-container{
+.map-container {
   width: 100%;
   height: 60vh;
+  position: relative;
+  z-index: 1;
 }
 
-.trip-details{
+.trip-details {
   margin-top: 20px;
   padding: 20px;
   display: flex;
@@ -91,35 +97,30 @@ body{
   gap: 20px;
 }
 
-.card{
+.card {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10 px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 300px;
   flex-shrink: 0;
 }
 
-.card h3{
+.card h3 {
   margin-top: 0;
 }
 
-.card ul{
+.card ul {
   list-style-type: none;
   padding: 0;
-
 }
 
-.card li{
+.card li {
   margin-bottom: 10px;
 }
 
-.separator {
-  margin: 20px 0;
-}
-
-button{
-  background-color: green ;
+button {
+  background-color: green;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -129,27 +130,31 @@ button{
   transition: background-color 0.3s ease;
 }
 
-button:hover{
+button:hover {
   background-color: #e60000;
 }
 
-.selection-title{
+.coolbuttons {
+  width: 100%;
+  padding: 14px;
+  background: #66bb6a;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
   font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.section-value{
-  font-weight: normal;
-  margin-left: 5px;
-}
-
-.travel-mode-buttons{
+.travel-mode-buttons {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 20px;
 }
 
-.travel-mode-buttons button{
+.travel-mode-buttons button {
   background-color: blue;
   color: white;
   padding: 10px 15px;
@@ -159,36 +164,27 @@ button:hover{
   transition: background-color 0.3s ease;
 }
 
-.travel-mode-buttons button:hover{
-  background-color: lightblue;
+.travel-mode-buttons button:hover {
+  background-color: #6dd5ed;
 }
 
-.travel-mode-buttons .selected{
+.travel-mode-buttons .selected {
   background-color: #388e3c;
 }
 
-.loginbutton{
+.separator {
+  margin: 20px 0;
+}
+
+.selection-title {
+  font-weight: bold;
+}
+
+.section-value {
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+.loginbutton {
   margin: auto;
-}
-
-.coolbuttons{
-    width: 100%;
-    padding: 14px;
-    background: #66bb6a;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.sidebar {
-  z-index: 10; /* Ensures it's on top */
-}
-
-.map-container {
-  position: relative; /* Needed for z-index to work */
-  z-index: 1; /* Puts it behind the sidebar */
 }
