@@ -195,7 +195,7 @@ const stopLocationTracking = () => {
     setIsRequestingDirections(false);
   };
 
-const requestDirections = async () => {
+  const requestDirections = () => {
   if (!start || !end) {
     alert('Please enter both start and end locations.');
     return;
@@ -203,7 +203,16 @@ const requestDirections = async () => {
 
   setIsRequestingDirections(true);
 
-  if (selectedVehicle === 'airplane') {
+ const requestDirections = async () => {
+  setIsRequestingDirections(true);
+
+if (selectedVehicle === 'airplane') {
+  if (!flightNumber) {
+    alert('Please enter a flight number.');
+    setIsRequestingDirections(false);
+    return;
+  }
+
   const api_key = 'f4d2bf2a93511f41e5ed87179195b0ac';
   const base_url = 'http://api.aviationstack.com/v1/flights';
 
@@ -211,20 +220,18 @@ const requestDirections = async () => {
     const response = await axios.get(base_url, {
       params: {
         access_key: api_key,
-        dep_iata: start,
-        arr_iata: end,
+        flight_iata: flightNumber,
       },
     });
 
-    const flightData = response.data.data?.[0]; // take first match
+    const flightData = response.data.data?.[0];
     if (!flightData || !flightData.departure || !flightData.arrival) {
-      alert('No matching flights found for selected route.');
+      alert('Flight data not available.');
       setIsRequestingDirections(false);
       return;
     }
 
-    const { departure, arrival, flight } = flightData;
-    setFlightNumber(flight.iata || 'N/A'); // Output the auto-picked flight number
+    const { departure, arrival } = flightData;
 
     if (
       !departure.latitude ||
@@ -232,7 +239,7 @@ const requestDirections = async () => {
       !arrival.latitude ||
       !arrival.longitude
     ) {
-      alert('Missing coordinates for departure or arrival.');
+      alert('Invalid flight coordinates.');
       setIsRequestingDirections(false);
       return;
     }
@@ -286,14 +293,17 @@ const requestDirections = async () => {
 }
 
 
-  // Regular (non-airplane) directions
+
+  setIsRequestingDirections(false);
+};
+
+
   setDirections(null);
   setDistance(null);
   setEmissions(null);
   setCosts(null);
   setDurationsByMode(null);
 };
-
 
 
   const handleModeSelect = (mode) => {
@@ -362,42 +372,39 @@ const requestDirections = async () => {
           <div className="header">
             <h1>CO2 Tracker</h1>
             <div className="input-container">
-  <input
-    ref={startRef}
-    className="search-bar"
-    type="text"
-    placeholder="Start Location"
-    value={start}
-    onChange={(e) => setStart(e.target.value)}
-  />
-  <input
-    ref={endRef}
-    className="search-bar"
-    type="text"
-    placeholder="End Location"
-    value={end}
-    onChange={(e) => setEnd(e.target.value)}
-  />
-  <label htmlFor="vehicle">Vehicle type:</label>
-  <select
-    name="vehicle"
-    id="vehicle"
-    value={selectedVehicle}
-    onChange={(e) => setSelectedVehicle(e.target.value)}
-  >
-    <option value="car">Car</option>
-    <option value="truck">Truck</option>
-    <option value="bus">Bus</option>
-    <option value="motorcycle">Motorcycle</option>
-    <option value="airplane">Airplane</option>
-  </select>
-
-
-  <button onClick={requestDirections}>
-    Get Directions
-  </button>
-</div>
-
+              <input
+                ref={startRef}
+                className="search-bar"
+                type="text"
+                placeholder="Start Location"
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+              />
+              <input
+                ref={endRef}
+                className="search-bar"
+                type="text"
+                placeholder="End Location"
+                value={end}
+                onChange={(e) => setEnd(e.target.value)}
+              />
+              <label htmlFor="vehicle">Vehicle type:</label>
+              <select
+                name="vehicle"
+                id="vehicle"
+                value={selectedVehicle}
+                onChange={(e) => setSelectedVehicle(e.target.value)}
+              >
+                <option value="car">Car</option>
+                <option value="truck">Truck</option>
+                <option value="bus">Bus</option>
+                <option value="motorcycle">Motorcycle</option>
+                <option value="airplane">Airplane</option>
+              </select>
+              <button onClick={requestDirections}>
+                  Get Directions
+              </button>
+            </div>
           </div>
 
           <div className="map-container">
@@ -547,13 +554,8 @@ const requestDirections = async () => {
                 
                 <div className="card">
   <h3>Airplane Flight Duration</h3>
-  <p>
-    {flightTime
-      ? `Flight ${flightNumber || "N/A"} duration: ${flightTime}`
-      : "Searching for a flight route..."}
-  </p>
+  <p>{flightTime || "Please enter a flight number to see the flight time."}</p>
 </div>
-
 
                 <div className="card">
                   <h3>Select Mode of Transport</h3>
