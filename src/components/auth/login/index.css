@@ -62,9 +62,6 @@ body {
     transition: background 0.3s;
 }
 
-.signin:hover {
-    background: #4caf50;
-}
 
 .googlebutton {
     width: 100%;
