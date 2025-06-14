@@ -384,7 +384,7 @@ const stopLocationTracking = () => {
           <div className="map-container">
             <LoadScript
   googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-  libraries={['places']}
+  libraries={['places', 'geometry']}
   onLoad={() => {
     if (startRef.current && endRef.current && window.google) {
       const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
