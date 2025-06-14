@@ -212,60 +212,7 @@ const stopLocationTracking = () => {
 
  
 
-  if (selectedVehicle === 'airplane') {
-  const geocoder = new window.google.maps.Geocoder();
-
-  geocoder.geocode({ address: start }, (startResults, status) => {
-    if (status === 'OK' && startResults.length > 0) {
-      const startLoc = startResults[0].geometry.location;
-
-      geocoder.geocode({ address: end }, (endResults, status) => {
-        if (status === 'OK' && endResults.length > 0) {
-          const endLoc = endResults[0].geometry.location;
-
-          const startCoord = {
-            lat: startLoc.lat(),
-            lng: startLoc.lng(),
-          };
-          const endCoord = {
-            lat: endLoc.lat(),
-            lng: endLoc.lng(),
-          };
-
-          const distanceKm = haversineDistance(startCoord, endCoord);
-          const distanceMiles = distanceKm * 0.621371;
-
-          const emission = distanceMiles * carbonEmissions.airplane;
-          const cost = distanceMiles * transportationCosts.airplane;
-          const durationHr = distanceMiles / speeds.airplane;
-          const hours = Math.floor(durationHr);
-          const minutes = Math.round((durationHr - hours) * 60);
-
-          setPath([startCoord, endCoord]);
-          setMapCenter(startCoord);
-          setZoom(4);
-          setDirections(null); // Clear previous route
-          setDistance(distanceKm * 1000);
-          setEmissions({ airplane: emission });
-          setCosts({ airplane: cost });
-          setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
-
-          setTotalDistance(prev => prev + distanceKm);
-          setTotalEmissions(prev => prev + emission);
-          setTotalCost(prev => prev + cost);
-        } else {
-          alert('Error geocoding destination');
-        }
-      });
-    } else {
-      alert('Error geocoding start location');
-    }
-  });
-
-  
-
-  setIsRequestingDirections(false);
-} else {
+  // Default land vehicle directions:
   const service = new window.google.maps.DirectionsService();
   service.route(
     {
@@ -275,8 +222,6 @@ const stopLocationTracking = () => {
     },
     handleDirectionsResponse
   );
-}
-
 };
 
 
@@ -288,25 +233,6 @@ const stopLocationTracking = () => {
       setTotalEmissions(totalEmissions + emissions[selectedVehicle]);
     }
   };
-
-  const haversineDistance = (coord1, coord2) => {
-  const toRad = x => (x * Math.PI) / 180;
-  const R = 6371; // km
-
-  const dLat = toRad(coord2.lat - coord1.lat);
-  const dLng = toRad(coord2.lng - coord1.lng);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(coord1.lat)) *
-      Math.cos(toRad(coord2.lat)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
 
   return (
     <div>
@@ -443,7 +369,6 @@ const stopLocationTracking = () => {
   center={autoCenter ? mapCenter : undefined}
   zoom={zoom}
   onDragStart={() => setAutoCenter(false)}
-  
 >
   {isRequestingDirections && start && end && (
   <DirectionsService
@@ -456,7 +381,6 @@ const stopLocationTracking = () => {
   />
 )}
 
-
   {directions && (
     <DirectionsRenderer
       directions={directions}
@@ -468,7 +392,6 @@ const stopLocationTracking = () => {
       }}
     />
   )}
-  
   {userLocation && (
     <Marker
       position={userLocation}
@@ -487,17 +410,6 @@ const stopLocationTracking = () => {
       }}
     />
   )}
-
-  {selectedVehicle === 'airplane' && path.length === 2 && (
-  <Polyline
-    path={path}
-    options={{
-      strokeColor: "#f44336",
-      strokeOpacity: 0.8,
-      strokeWeight: 4,
-    }}
-  />
-)}
 </GoogleMap>
 
             </LoadScript>
