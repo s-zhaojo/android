@@ -184,10 +184,6 @@ const stopLocationTracking = () => {
         modeDurations[mode] = `${hours}h ${minutes}m`;
       });
       setDurationsByMode(modeDurations);
-
-      setTotalDistance(prev => prev + distInKm);
-      setTotalEmissions(prev => prev + modeEmissions[selectedVehicle]);
-      setTotalCost(prev => prev + modeCosts[selectedVehicle]);
     } else {
       console.error('Error fetching directions:', status);
       alert('Failed to fetch directions. Please check your locations.');
@@ -223,6 +219,16 @@ const stopLocationTracking = () => {
     handleDirectionsResponse
   );
 };
+
+
+
+  const handleModeSelect = (mode) => {
+    if (emissions && emissions[selectedVehicle]) {
+      setTotalDistance(totalDistance + distance / 1000);
+      setTotalCost(totalCost + costs[selectedVehicle]);
+      setTotalEmissions(totalEmissions + emissions[selectedVehicle]);
+    }
+  };
 
   return (
     <div>
