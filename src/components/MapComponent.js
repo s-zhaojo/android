@@ -420,16 +420,17 @@ const stopLocationTracking = () => {
   zoom={zoom}
   onDragStart={() => setAutoCenter(false)}
 >
-  {isRequestingDirections && start && end && (
-    <DirectionsService
-      options={{
-        destination: end,
-        origin: start,
-        travelMode: 'DRIVING',
-      }}
-      callback={handleDirectionsResponse}
-    />
-  )}
+  {isRequestingDirections && start && end && selectedVehicle !== 'airplane' && (
+  <DirectionsService
+    options={{
+      destination: end,
+      origin: start,
+      travelMode: 'DRIVING',
+    }}
+    callback={handleDirectionsResponse}
+  />
+)}
+
   {directions && selectedVehicle !== 'airplane' && (
     <DirectionsRenderer
       directions={directions}
