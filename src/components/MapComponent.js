@@ -94,7 +94,7 @@ const setLocation = () => {
           setMapCenter(pos);
         }
         setZoom(16);
-        setPath((prevPath) => [...prevPath, pos]); 
+        setPath((prevPath) => [...prevPath, pos]); // Add to trail
       },
       (error) => {
         console.error("Geolocation error:", error);
@@ -195,89 +195,118 @@ const stopLocationTracking = () => {
     setIsRequestingDirections(false);
   };
 
-  const requestDirections = async () => {
+  const requestDirections = () => {
   if (!start || !end) {
     alert('Please enter both start and end locations.');
     return;
   }
 
   setIsRequestingDirections(true);
+
+ const requestDirections = async () => {
+  setIsRequestingDirections(true);
+
+if (selectedVehicle === 'airplane') {
+  if (!flightNumber) {
+    alert('Please enter a flight number.');
+    setIsRequestingDirections(false);
+    return;
+  }
+
+  const api_key = 'f4d2bf2a93511f41e5ed87179195b0ac';
+  const base_url = 'http://api.aviationstack.com/v1/flights';
+
+  try {
+    const response = await axios.get(base_url, {
+      params: {
+        access_key: api_key,
+        flight_iata: flightNumber,
+      },
+    });
+
+    const flightData = response.data.data?.[0];
+    if (!flightData || !flightData.departure || !flightData.arrival) {
+      alert('Flight data not available.');
+      setIsRequestingDirections(false);
+      return;
+    }
+
+    const { departure, arrival } = flightData;
+
+    if (
+      !departure.latitude ||
+      !departure.longitude ||
+      !arrival.latitude ||
+      !arrival.longitude
+    ) {
+      alert('Invalid flight coordinates.');
+      setIsRequestingDirections(false);
+      return;
+    }
+
+    const startLoc = new window.google.maps.LatLng(
+      departure.latitude,
+      departure.longitude
+    );
+    const endLoc = new window.google.maps.LatLng(
+      arrival.latitude,
+      arrival.longitude
+    );
+
+    const distanceMeters =
+      window.google.maps.geometry.spherical.computeDistanceBetween(
+        startLoc,
+        endLoc
+      );
+    const distanceKm = distanceMeters / 1000;
+    const distanceMiles = distanceKm * 0.621371;
+
+    const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
+    const airplaneCost = distanceMiles * transportationCosts.airplane;
+    const airplaneDuration = distanceMiles / speeds.airplane;
+    const hours = Math.floor(airplaneDuration);
+    const minutes = Math.round((airplaneDuration - hours) * 60);
+
+    // Set the flight time (duration) here
+    setFlightTime(`${hours}h ${minutes}m`);
+
+    setDistance(distanceMeters);
+    setEmissions({ airplane: airplaneEmissions });
+    setCosts({ airplane: airplaneCost });
+    setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
+
+    setTotalDistance((prev) => prev + distanceKm);
+    setTotalEmissions((prev) => prev + airplaneEmissions);
+    setTotalCost((prev) => prev + airplaneCost);
+
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(startLoc);
+    bounds.extend(endLoc);
+    setMapCenter(bounds.getCenter());
+    setZoom(3);
+  } catch (error) {
+    console.error('Error fetching flight data:', error);
+    alert('Failed to fetch airplane flight data.');
+  }
+
+  setIsRequestingDirections(false);
+  return;
+}
+
+
+  // Continue with other vehicle types here...
+
+  setIsRequestingDirections(false);
+};
+
+
+  // Handle normal directions (DRIVING, etc.)
   setDirections(null);
   setDistance(null);
   setEmissions(null);
   setCosts(null);
   setDurationsByMode(null);
-
-  const geocoder = new window.google.maps.Geocoder();
-
-  if (selectedVehicle === 'airplane') {
-    try {
-      const [startResult, endResult] = await Promise.all([
-        new Promise((resolve, reject) =>
-          geocoder.geocode({ address: start }, (results, status) =>
-            status === 'OK' ? resolve(results[0]) : reject(status)
-          )
-        ),
-        new Promise((resolve, reject) =>
-          geocoder.geocode({ address: end }, (results, status) =>
-            status === 'OK' ? resolve(results[0]) : reject(status)
-          )
-        ),
-      ]);
-
-      const startLoc = startResult.geometry.location;
-      const endLoc = endResult.geometry.location;
-
-      const distanceMeters = window.google.maps.geometry.spherical.computeDistanceBetween(
-        startLoc,
-        endLoc
-      );
-      const distanceKm = distanceMeters / 1000;
-      const distanceMiles = distanceKm * 0.621371;
-
-      const airplaneEmissions = distanceMiles * carbonEmissions.airplane;
-      const airplaneCost = distanceMiles * transportationCosts.airplane;
-      const airplaneDuration = distanceMiles / speeds.airplane;
-      const hours = Math.floor(airplaneDuration);
-      const minutes = Math.round((airplaneDuration - hours) * 60);
-
-      setFlightTime(`${hours}h ${minutes}m`);
-      setDistance(distanceMeters);
-      setEmissions({ airplane: airplaneEmissions });
-      setCosts({ airplane: airplaneCost });
-      setDurationsByMode({ airplane: `${hours}h ${minutes}m` });
-
-      setTotalDistance((prev) => prev + distanceKm);
-      setTotalEmissions((prev) => prev + airplaneEmissions);
-      setTotalCost((prev) => prev + airplaneCost);
-
-      const bounds = new window.google.maps.LatLngBounds();
-      bounds.extend(startLoc);
-      bounds.extend(endLoc);
-      setMapCenter(bounds.getCenter());
-      setZoom(3);
-
-    } catch (error) {
-      console.error('Error geocoding for airplane route:', error);
-      alert('Failed to calculate airplane route. Please check the addresses.');
-    }
-
-    setIsRequestingDirections(false);
-    return;
-  }
-
-  // Default land vehicle directions:
-  const service = new window.google.maps.DirectionsService();
-  service.route(
-    {
-      origin: start,
-      destination: end,
-      travelMode: 'DRIVING',
-    },
-    handleDirectionsResponse
-  );
 };
-
 
 
   const handleModeSelect = (mode) => {
@@ -294,9 +323,9 @@ const stopLocationTracking = () => {
         <div className="sidebar">
           <div className = "card">
             {!isTracking ? (
-             <button className = "coolbuttons" onClick={setLocation}>Get Location</button>
+             <button onClick={setLocation}>Get Location</button>
               ) : (
-                    <button className = "coolbuttons" onClick={stopLocationTracking}>Stop Location</button>
+                    <button onClick={stopLocationTracking}>Stop Location</button>
               )}
             <img src={GPS} alt="GPS" width="100%" height="55%"/>
             <nav className='flex flex-row gap-x-2 w-full z-20 fixed top-0 left-0 h-12 border-b place-content-center items-center bg-gray-200'>
@@ -304,7 +333,7 @@ const stopLocationTracking = () => {
                             userLoggedIn
                                 ?
                                 <>
-                                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='coolbuttons text-sm text-blue-600 underline'>Logout</button>
+                                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className='text-sm text-blue-600 underline'>Logout</button>
                                 </>
                                 :
                                 <>
@@ -384,15 +413,19 @@ const stopLocationTracking = () => {
           <div className="map-container">
             <LoadScript
   googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-  libraries={['places', 'geometry']}
+  libraries={['places']}
   onLoad={() => {
     if (startRef.current && endRef.current && window.google) {
       const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
         types: ['geocode', 'establishment'],
         locationBias: {
-    radius: 500000000, 
-    center: { lat: 47.6062, lng: -122.3321 } 
-  }
+      radius: 800000000, 
+      center: {
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      },
+    },
+
       });
       autocompleteStart.addListener('place_changed', () => {
         const place = autocompleteStart.getPlace();
@@ -424,17 +457,16 @@ const stopLocationTracking = () => {
   zoom={zoom}
   onDragStart={() => setAutoCenter(false)}
 >
-  {isRequestingDirections && start && end && selectedVehicle !== 'airplane' && (
-  <DirectionsService
-    options={{
-      destination: end,
-      origin: start,
-      travelMode: 'DRIVING',
-    }}
-    callback={handleDirectionsResponse}
-  />
-)}
-
+  {isRequestingDirections && start && end && (
+    <DirectionsService
+      options={{
+        destination: end,
+        origin: start,
+        travelMode: 'DRIVING',
+      }}
+      callback={handleDirectionsResponse}
+    />
+  )}
   {directions && selectedVehicle !== 'airplane' && (
     <DirectionsRenderer
       directions={directions}
