@@ -390,7 +390,7 @@ const stopLocationTracking = () => {
       const autocompleteStart = new window.google.maps.places.Autocomplete(startRef.current, {
         types: ['geocode', 'establishment'],
         locationBias: {
-    radius: 500000, 
+    radius: 500000000, 
     center: { lat: 47.6062, lng: -122.3321 } 
   }
       });
