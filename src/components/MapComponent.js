@@ -224,16 +224,6 @@ const stopLocationTracking = () => {
   );
 };
 
-
-
-  const handleModeSelect = (mode) => {
-    if (emissions && emissions[selectedVehicle]) {
-      setTotalDistance(totalDistance + distance / 1000);
-      setTotalCost(totalCost + costs[selectedVehicle]);
-      setTotalEmissions(totalEmissions + emissions[selectedVehicle]);
-    }
-  };
-
   return (
     <div>
       <div className="container">
@@ -394,7 +384,7 @@ const stopLocationTracking = () => {
   )}
   {userLocation && (
     <Marker
-      position={userLocation}
+    position={userLocation}
       icon={{
         url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
       }}
