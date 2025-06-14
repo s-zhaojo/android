@@ -80,6 +80,38 @@ const MapComponent = () => {
 
 
 
+const setLocation = () => {
+  if (navigator.geolocation) {
+    const id = navigator.geolocation.watchPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        console.log("User location:", pos);
+        setUserLocation(pos);
+        if (autoCenter) {
+          setMapCenter(pos);
+        }
+        setZoom(16);
+        setPath((prevPath) => [...prevPath, pos]); 
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        alert("Error getting location: " + error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 1000,
+      }
+    );
+    setWatchId(id);
+    setIsTracking(true);
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+};
 
 const getBestTransportTips = () => {
   if (!emissions || !costs || !durationsByMode) return null;
