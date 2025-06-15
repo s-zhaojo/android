@@ -9,7 +9,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  
 }
 
 .main-content {
@@ -63,7 +63,7 @@ body {
 .sidebar a {
   color: white;
   text-decoration: none;
-  padding: 10px;
+  padding-top: 10px;
   margin-bottom: 20px;
   display: block;
   border-radius: 5px;
