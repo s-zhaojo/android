@@ -37,7 +37,7 @@ body {
 }
 
 .search-bar {
-  p
+  padding: 10px;
   border-radius: 20px;
   border: 1px solid #ddd;
   font-size: 16px;
