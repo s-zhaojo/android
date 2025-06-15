@@ -230,67 +230,6 @@ const stopLocationTracking = () => {
     }
   };
 
-  const haversineDistance = (coords1, coords2) => {
-  const toRad = (x) => (x * Math.PI) / 180;
-
-  const R = 6371; // Radius of Earth in km
-  const dLat = toRad(coords2.lat - coords1.lat);
-  const dLon = toRad(coords2.lng - coords1.lng);
-  const lat1 = toRad(coords1.lat);
-  const lat2 = toRad(coords2.lat);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1) * Math.cos(lat2) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
-};
-
-
-
-  const estimateAirTravel = async () => {
-  if (!start || !end) {
-    alert('Please enter both start and end locations.');
-    return;
-  }
-
-  try {
-    const geocoder = new window.google.maps.Geocoder();
-
-    const [startResult] = await geocoder.geocode({ address: start });
-    const [endResult] = await geocoder.geocode({ address: end });
-
-    const startCoords = {
-      lat: startResult.geometry.location.lat(),
-      lng: startResult.geometry.location.lng(),
-    };
-
-    const endCoords = {
-      lat: endResult.geometry.location.lat(),
-      lng: endResult.geometry.location.lng(),
-    };
-
-    const distanceKm = haversineDistance(startCoords, endCoords);
-    const distanceMiles = distanceKm * 0.621371;
-
-    const durationHours = distanceKm / speeds.airplane;
-    const hours = Math.floor(durationHours);
-    const minutes = Math.round((durationHours - hours) * 60);
-
-    setFlightTime(`${hours}h ${minutes}m`);
-    setTotalDistance(prev => prev + distanceKm);
-    setTotalEmissions(prev => prev + distanceMiles * carbonEmissions.airplane);
-    setTotalCost(prev => prev + distanceMiles * transportationCosts.airplane);
-
-  } catch (error) {
-    console.error('Error estimating flight travel:', error);
-    alert('Failed to estimate flight travel.');
-  }
-};
-
-
   return (
     <div>
       <div className="container">
@@ -381,9 +320,6 @@ const stopLocationTracking = () => {
               <button onClick={requestDirections}>
                   Get Directions
               </button>
-              <button onClick={estimateAirTravel}>
-  Estimate Airplane Travel
-</button>
             </div>
           </div>
 
