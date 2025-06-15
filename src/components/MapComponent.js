@@ -230,6 +230,77 @@ const stopLocationTracking = () => {
     }
   };
 
+  const haversineDistance = (coords1, coords2) => {
+  const toRad = (x) => (x * Math.PI) / 180;
+
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(coords2.lat - coords1.lat);
+  const dLon = toRad(coords2.lng - coords1.lng);
+  const lat1 = toRad(coords1.lat);
+  const lat2 = toRad(coords2.lat);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
+
+
+
+  const estimateAirTravel = async () => {
+  if (!start || !end) {
+    alert('Please enter both start and end locations.');
+    return;
+  }
+
+  try {
+    if (!window.google || !window.google.maps) {
+      alert("Google Maps not loaded yet.");
+      return;
+    }
+
+    const geocoder = new window.google.maps.Geocoder();
+
+    const getCoords = (address) =>
+      new Promise((resolve, reject) => {
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            resolve({
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng()
+            });
+          } else {
+            reject(`Geocoding failed: ${status}`);
+          }
+        });
+      });
+
+    const startCoords = await getCoords(start);
+    const endCoords = await getCoords(end);
+
+    const distanceKm = haversineDistance(startCoords, endCoords);
+    const distanceMiles = distanceKm * 0.621371;
+
+    const durationHours = distanceKm / speeds.airplane;
+    const hours = Math.floor(durationHours);
+    const minutes = Math.round((durationHours - hours) * 60);
+
+    setFlightTime(`${hours}h ${minutes}m`);
+    setTotalDistance(prev => prev + distanceKm);
+    setTotalEmissions(prev => prev + distanceMiles * carbonEmissions.airplane);
+    setTotalCost(prev => prev + distanceMiles * transportationCosts.airplane);
+
+  } catch (error) {
+    console.error("Error in estimateAirTravel:", error);
+    alert("Could not estimate air travel.");
+  }
+};
+
+
+
   return (
     <div>
       <div className="container">
@@ -320,6 +391,9 @@ const stopLocationTracking = () => {
               <button onClick={requestDirections}>
                   Get Directions
               </button>
+              <button onClick={estimateAirTravel}>
+  Estimate Airplane Travel
+</button>
             </div>
           </div>
 
