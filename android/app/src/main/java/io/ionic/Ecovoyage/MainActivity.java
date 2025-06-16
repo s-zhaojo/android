@@ -1,4 +1,4 @@
-package com.example.app;
+package io.ionic.Ecovoyage;
 
 import com.getcapacitor.BridgeActivity;
 

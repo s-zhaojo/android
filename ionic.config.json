@@ -1,6 +1,7 @@
 {
-    "name": "myapp",
+    "name": "Ecovoyage",
     "integrations": {
+        "capacitor": {}
     },
     "type": "react"
 }
